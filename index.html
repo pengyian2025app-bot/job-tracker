@@ -1030,6 +1030,7 @@
         { label: '福利', get: o => escapeHtml(o.other_benefits || '-') },
         { label: '截止日期', get: o => o.deadline || '-' },
         { label: '💰 总年包 (k)', get: o => highlight(calcOfferTotal(o), maxTotal, true) + ' k', highlightAll: true },
+        { label: '操作', get: o => '<button onclick="deleteOffer(\'' + o.id + '\')" class="text-xs text-red-600 hover:underline">🗑 删除</button>' },
       ];
 
       wrap.innerHTML = '<div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr class="border-b border-slate-200"><th class="text-left py-2 px-3 font-medium text-slate-600 sticky left-0 bg-white">对比项</th>' +
@@ -1041,6 +1042,14 @@
           currentOffers.map(o => '<td class="py-2 px-3">' + r.get(o) + '</td>').join('') + '</tr>').join('') +
         '</tbody></table></div>';
     }
+
+    window.deleteOffer = async (id) => {
+      if (!confirm('确定删除这个 Offer 吗？')) return;
+      const { error } = await sb.from('offers').delete().eq('id', id);
+      if (error) { alert('删除失败：' + error.message); return; }
+      currentOffers = currentOffers.filter(o => o.id !== id);
+      renderOfferCompare();
+    };
 
     function highlight(val, max, all = false) {
       if (val === max && max > 0) {
