@@ -581,7 +581,7 @@
     let batchJobs = []; // 批量识别的临时结�?    let selectedImage = null; // 提前声明，避�?openForm �?resetUpload 引用未初始化
 
     // 状态映射（提前声明，renderDashboard 会用到）
-    const STATUS_LABELS_ALL = { wishlist: '想投', applied: '已投�?, screen: '笔试/筛�?, interview: '面试�?, offer: 'Offer', rejected: '已拒�? };
+    const STATUS_LABELS_ALL = { wishlist: '想投', applied: '已投递', screen: '笔试/筛选', interview: '面试中', offer: 'Offer', rejected: '已拒绝' };
     const STATUS_ORDER = ['wishlist', 'applied', 'screen', 'interview', 'offer', 'rejected'];
     const STATUS_LABELS = STATUS_LABELS_ALL; // 兼容旧引�?
     // ========== �?IIFE 开头预先挂载所�?onclick 需要的函数 ==========

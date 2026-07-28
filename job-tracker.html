@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
@@ -32,8 +32,8 @@
   <nav class="bg-white border-b border-slate-200 sticky top-0 z-10">
     <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
       <div class="flex items-center gap-2">
-        <button onclick="openInterviewModal()" class="px-3 py-1.5 text-sm border border-slate-300 rounded-lg hover:bg-slate-50" title="AI 面试题生�?>🎯 面试�?/button>
-        <button onclick="openMatchModal()" class="px-3 py-1.5 text-sm border border-slate-300 rounded-lg hover:bg-slate-50" title="AI 岗位匹配度评�?>�?匹配�?/button>
+        <button onclick="openInterviewModal()" class="px-3 py-1.5 text-sm border border-slate-300 rounded-lg hover:bg-slate-50" title="AI 面试题生�?>🎯 面试�?/button>
+        <button onclick="openMatchModal()" class="px-3 py-1.5 text-sm border border-slate-300 rounded-lg hover:bg-slate-50" title="AI 岗位匹配度评�?>�?匹配�?/button>
         <button onclick="openLetterModal()" class="px-3 py-1.5 text-sm border border-slate-300 rounded-lg hover:bg-slate-50" title="AI 投递信草稿">✉️ 投递信</button>
         <button onclick="openReviewModal()" class="px-3 py-1.5 text-sm border border-slate-300 rounded-lg hover:bg-slate-50" title="AI 面试复盘">🎙 复盘</button>
         <button onclick="openJournalModal()" class="px-3 py-1.5 text-sm border border-slate-300 rounded-lg hover:bg-slate-50" title="每日复盘">📔 复盘笔记</button>
@@ -45,15 +45,15 @@
   </nav>
 
   <div class="max-w-5xl mx-auto px-4 py-6">
-    <!-- ============ 投递进度看�?============ -->
+    <!-- ============ 投递进度看�?============ -->
     <div id="dashboard" class="hidden mb-6 bg-white rounded-xl border border-slate-200 p-4">
       <h2 class="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
-        <span>📊</span>投递进度看�?      </h2>
+        <span>📊</span>投递进度看�?      </h2>
 
       <!-- 关键指标 -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
         <div class="bg-blue-50 rounded-lg p-3">
-          <div class="text-xs text-blue-600">总投�?/div>
+          <div class="text-xs text-blue-600">总投�?/div>
           <div class="text-2xl font-bold text-blue-700" id="kpiTotal">0</div>
         </div>
         <div class="bg-orange-50 rounded-lg p-3">
@@ -61,7 +61,7 @@
           <div class="text-2xl font-bold text-orange-700" id="kpiWeekDeadline">0</div>
         </div>
         <div class="bg-green-50 rounded-lg p-3">
-          <div class="text-xs text-green-600">面试�?/div>
+          <div class="text-xs text-green-600">面试�?/div>
           <div class="text-2xl font-bold text-green-700" id="kpiInterview">0</div>
         </div>
         <div class="bg-purple-50 rounded-lg p-3">
@@ -73,13 +73,13 @@
       <!-- 图表 -->
       <div class="grid md:grid-cols-2 gap-4">
         <div>
-          <div class="text-xs text-slate-500 mb-2">状态分�?/div>
+          <div class="text-xs text-slate-500 mb-2">状态分�?/div>
           <div style="height: 200px; position: relative;">
             <canvas id="statusChart"></canvas>
           </div>
         </div>
         <div>
-          <div class="text-xs text-slate-500 mb-2">行业分布（Top 8�?/div>
+          <div class="text-xs text-slate-500 mb-2">行业分布（Top 8�?/div>
           <div style="height: 200px; position: relative;">
             <canvas id="industryChart"></canvas>
           </div>
@@ -91,16 +91,16 @@
     <div class="flex flex-wrap gap-3 mb-4 items-center">
       <div class="relative">
         <input id="searchCompany" type="text" placeholder="🔍 搜索公司/岗位" class="pl-3 pr-8 py-2 border border-slate-300 rounded-lg text-sm bg-white w-48 focus:outline-none focus:border-blue-500">
-        <button id="clearSearch" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs hidden" title="清空">�?/button>
+        <button id="clearSearch" class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs hidden" title="清空">�?/button>
       </div>
       <select id="filterStatus" class="px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white">
-        <option value="">全部状�?/option>
+        <option value="">全部状�?/option>
         <option value="wishlist">想投</option>
-        <option value="applied">已投�?/option>
-        <option value="screen">笔试/筛�?/option>
-        <option value="interview">面试�?/option>
+        <option value="applied">已投�?/option>
+        <option value="screen">笔试/筛�?/option>
+        <option value="interview">面试�?/option>
         <option value="offer">Offer</option>
-        <option value="rejected">已拒�?/option>
+        <option value="rejected">已拒�?/option>
       </select>
       <select id="filterEnterprise" class="px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white">
         <option value="">全部企业性质</option>
@@ -113,25 +113,25 @@
       </select>
       <select id="filterIndustry" class="px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white">
         <option value="">全部行业</option>
-        <option value="通信/电子/半导�?>通信/电子/半导�?/option>
-        <option value="IT/互联�?游戏/电商">IT/互联�?游戏/电商</option>
-        <option value="人工智能/机器�?>人工智能/机器�?/option>
-        <option value="汽车/新能�?>汽车/新能�?/option>
+        <option value="通信/电子/半导�?>通信/电子/半导�?/option>
+        <option value="IT/互联�?游戏/电商">IT/互联�?游戏/电商</option>
+        <option value="人工智能/机器�?>人工智能/机器�?/option>
+        <option value="汽车/新能�?>汽车/新能�?/option>
         <option value="金融/银行/保险">金融/银行/保险</option>
         <option value="教育/培训">教育/培训</option>
         <option value="广告/咨询/服务">广告/咨询/服务</option>
-        <option value="房地�?建筑/物业">房地�?建筑/物业</option>
+        <option value="房地�?建筑/物业">房地�?建筑/物业</option>
         <option value="医疗/医药">医疗/医药</option>
-        <option value="机械/制�?设备">机械/制�?设备</option>
+        <option value="机械/制�?设备">机械/制�?设备</option>
         <option value="快消/零售">快消/零售</option>
         <option value="能源/化工/环保">能源/化工/环保</option>
         <option value="其他">其他</option>
       </select>
       <select id="sortBy" class="px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white">
-        <option value="deadline">按截止日�?/option>
-        <option value="created">按添加时�?/option>
+        <option value="deadline">按截止日�?/option>
+        <option value="created">按添加时�?/option>
         <option value="company">按公司名</option>
-        <option value="update_date">按更新日�?/option>
+        <option value="update_date">按更新日�?/option>
       </select>
       <button onclick="exportExcel()" class="ml-auto px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white hover:bg-slate-50">📥 导出 Excel</button>
     </div>
@@ -144,11 +144,11 @@
     </div>
 
     <div>
-      <h2 class="text-sm font-semibold text-slate-600 mb-2">全部记录 <span id="totalCount" class="text-slate-400 font-normal">�?0 �?/span></h2>
+      <h2 class="text-sm font-semibold text-slate-600 mb-2">全部记录 <span id="totalCount" class="text-slate-400 font-normal">�?0 �?/span></h2>
       <div id="jobList" class="grid gap-3"></div>
       <div id="emptyState" class="hidden text-center py-16 text-slate-400">
         <div class="text-5xl mb-2">📋</div>
-        <p>还没有记录，点击右下�?+ 开始添�?/p>
+        <p>还没有记录，点击右下�?+ 开始添�?/p>
       </div>
     </div>
   </div>
@@ -158,7 +158,7 @@
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 fade-in max-h-[90vh] overflow-y-auto">
       <div class="flex items-center justify-between mb-4">
         <h3 id="formTitle" class="text-lg font-semibold">新增记录</h3>
-        <button onclick="closeForm()" class="text-slate-400 hover:text-slate-600">�?/button>
+        <button onclick="closeForm()" class="text-slate-400 hover:text-slate-600">�?/button>
       </div>
 
       <div id="uploadSection" class="mb-4 pb-4 border-b border-slate-200">
@@ -174,7 +174,7 @@
             <div class="text-xs text-slate-500 mt-2">点击重新选择</div>
           </div>
           <div id="aiLoading" class="hidden mt-2">
-            <div class="text-sm text-blue-600">🤖 AI 识别�?..</div>
+            <div class="text-sm text-blue-600">🤖 AI 识别�?..</div>
             <div class="ai-loading h-1 rounded mt-2"></div>
           </div>
           <div id="aiError" class="hidden mt-2 text-xs text-red-600"></div>
@@ -189,18 +189,18 @@
         </div>
         <div>
           <label class="text-xs text-slate-600">职位 <span class="text-red-500">*</span></label>
-          <input id="fPosition" required placeholder="前端工程�? class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:border-blue-500">
+          <input id="fPosition" required placeholder="前端工程�? class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:border-blue-500">
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="text-xs text-slate-600">状�?/label>
+            <label class="text-xs text-slate-600">状�?/label>
             <select id="fStatus" class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white">
               <option value="wishlist">想投</option>
-              <option value="applied">已投�?/option>
-              <option value="screen">笔试/筛�?/option>
-              <option value="interview">面试�?/option>
+              <option value="applied">已投�?/option>
+              <option value="screen">笔试/筛�?/option>
+              <option value="interview">面试�?/option>
               <option value="offer">Offer</option>
-              <option value="rejected">已拒�?/option>
+              <option value="rejected">已拒�?/option>
             </select>
           </div>
           <div>
@@ -211,11 +211,11 @@
         <div>
           <label class="text-xs text-slate-600">信息更新日期</label>
           <input id="fUpdateDate" type="date" class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:border-blue-500">
-          <div class="text-xs text-slate-400 mt-1">飞书表格�?更新日期"�?/div>
+          <div class="text-xs text-slate-400 mt-1">飞书表格�?更新日期"�?/div>
         </div>
         <div>
           <label class="text-xs text-slate-600">薪资</label>
-          <input id="fSalary" placeholder="20-30K · 14�? class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:border-blue-500">
+          <input id="fSalary" placeholder="20-30K · 14�? class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:border-blue-500">
         </div>
         <div>
           <label class="text-xs text-slate-600">工作地点</label>
@@ -225,7 +225,7 @@
           <div>
             <label class="text-xs text-slate-600">企业性质</label>
             <select id="fEnterpriseType" class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white">
-              <option value="">�?未�?�?/option>
+              <option value="">�?未�?�?/option>
               <option value="民企">民企</option>
               <option value="央企国企">央企国企</option>
               <option value="外企">外企</option>
@@ -235,19 +235,19 @@
             </select>
           </div>
           <div>
-            <label class="text-xs text-slate-600">所属行�?/label>
+            <label class="text-xs text-slate-600">所属行�?/label>
             <select id="fIndustry" class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white">
-              <option value="">�?未�?�?/option>
-              <option value="通信/电子/半导�?>通信/电子/半导�?/option>
-              <option value="IT/互联�?游戏/电商">IT/互联�?游戏/电商</option>
-              <option value="人工智能/机器�?>人工智能/机器�?/option>
-              <option value="汽车/新能�?>汽车/新能�?/option>
+              <option value="">�?未�?�?/option>
+              <option value="通信/电子/半导�?>通信/电子/半导�?/option>
+              <option value="IT/互联�?游戏/电商">IT/互联�?游戏/电商</option>
+              <option value="人工智能/机器�?>人工智能/机器�?/option>
+              <option value="汽车/新能�?>汽车/新能�?/option>
               <option value="金融/银行/保险">金融/银行/保险</option>
               <option value="教育/培训">教育/培训</option>
               <option value="广告/咨询/服务">广告/咨询/服务</option>
-              <option value="房地�?建筑/物业">房地�?建筑/物业</option>
+              <option value="房地�?建筑/物业">房地�?建筑/物业</option>
               <option value="医疗/医药">医疗/医药</option>
-              <option value="机械/制�?设备">机械/制�?设备</option>
+              <option value="机械/制�?设备">机械/制�?设备</option>
               <option value="快消/零售">快消/零售</option>
               <option value="能源/化工/环保">能源/化工/环保</option>
               <option value="其他">其他</option>
@@ -260,7 +260,7 @@
         </div>
         <div>
           <label class="text-xs text-slate-600">备注</label>
-          <textarea id="fNotes" rows="3" placeholder="面试官很 nice，算法问�?..." class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:border-blue-500"></textarea>
+          <textarea id="fNotes" rows="3" placeholder="面试官很 nice，算法问�?..." class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:border-blue-500"></textarea>
         </div>
         <div class="flex gap-2 pt-2">
           <button type="button" onclick="closeForm()" class="flex-1 py-2 border border-slate-300 rounded-lg text-sm hover:bg-slate-50">取消</button>
@@ -277,22 +277,22 @@
         <h3 class="text-lg font-semibold flex items-center gap-2">
           <span>📸</span>批量识别结果
         </h3>
-        <button onclick="closeBatchModal()" class="text-slate-400 hover:text-slate-600">�?/button>
+        <button onclick="closeBatchModal()" class="text-slate-400 hover:text-slate-600">�?/button>
       </div>
 
       <div id="batchSummary" class="text-sm text-slate-600 mb-3 p-3 bg-blue-50 rounded-lg">
-        识别�?..
+        识别�?..
       </div>
 
       <div class="flex items-center gap-2 mb-3">
         <label class="text-xs text-slate-600">批量入库状态：</label>
         <select id="batchDefaultStatus" class="px-2 py-1 border border-slate-300 rounded text-sm bg-white">
           <option value="wishlist">想投（推荐）</option>
-          <option value="applied">已投�?/option>
-          <option value="screen">笔试/筛�?/option>
-          <option value="interview">面试�?/option>
+          <option value="applied">已投�?/option>
+          <option value="screen">笔试/筛�?/option>
+          <option value="interview">面试�?/option>
         </select>
-        <button onclick="batchSelectAll()" class="text-xs text-blue-600 hover:underline ml-auto">全�?/button>
+        <button onclick="batchSelectAll()" class="text-xs text-blue-600 hover:underline ml-auto">全�?/button>
         <button onclick="batchDeselectAll()" class="text-xs text-slate-500 hover:underline">取消</button>
       </div>
 
@@ -305,24 +305,24 @@
     </div>
   </div>
 
-  <!-- ============ 面试题生成弹�?============ -->
+  <!-- ============ 面试题生成弹�?============ -->
   <div id="interviewModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl p-6 fade-in max-h-[90vh] overflow-y-auto">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-lg font-semibold flex items-center gap-2">
           <span>🎯</span>AI 面试题生成器
         </h3>
-        <button onclick="closeInterviewModal()" class="text-slate-400 hover:text-slate-600">�?/button>
+        <button onclick="closeInterviewModal()" class="text-slate-400 hover:text-slate-600">�?/button>
       </div>
 
       <div id="interviewForm" class="space-y-3 mb-4">
         <div>
-          <label class="text-xs text-slate-600">公司（选填�?/label>
+          <label class="text-xs text-slate-600">公司（选填�?/label>
           <input id="iqCompany" placeholder="字节跳动" class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm">
         </div>
         <div>
           <label class="text-xs text-slate-600">岗位 <span class="text-red-500">*</span></label>
-          <input id="iqPosition" required placeholder="前端工程�? class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm">
+          <input id="iqPosition" required placeholder="前端工程�? class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm">
         </div>
         <button onclick="generateQuestions()" id="iqBtn" class="w-full py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg text-sm hover:opacity-90">
           🚀 生成 10 道面试题
@@ -340,37 +340,37 @@
     </div>
   </div>
 
-  <!-- ============ 匹配度评分弹�?============ -->
+  <!-- ============ 匹配度评分弹�?============ -->
   <div id="matchModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl p-6 fade-in max-h-[90vh] overflow-y-auto">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-lg font-semibold flex items-center gap-2">
-          <span>�?/span>AI 岗位匹配度评�?        </h3>
-        <button onclick="closeMatchModal()" class="text-slate-400 hover:text-slate-600">�?/button>
+          <span>�?/span>AI 岗位匹配度评�?        </h3>
+        <button onclick="closeMatchModal()" class="text-slate-400 hover:text-slate-600">�?/button>
       </div>
 
       <div id="matchForm" class="space-y-3 mb-4">
         <div>
-          <label class="text-xs text-slate-600">你的简历（粘贴文本�?/label>
-          <textarea id="matchResume" rows="6" placeholder="姓名：张�?#10;学历：本�?#10;技能：JavaScript, React, Node.js&#10;项目�?.." class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm"></textarea>
+          <label class="text-xs text-slate-600">你的简历（粘贴文本�?/label>
+          <textarea id="matchResume" rows="6" placeholder="姓名：张�?#10;学历：本�?#10;技能：JavaScript, React, Node.js&#10;项目�?.." class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm"></textarea>
           <div class="flex gap-2 mt-1">
-            <button onclick="fillSampleResume()" class="text-xs text-blue-600 hover:underline">📋 填入示例简�?/button>
-            <button onclick="saveResume()" class="text-xs text-slate-500 hover:underline">💾 保存到本�?/button>
+            <button onclick="fillSampleResume()" class="text-xs text-blue-600 hover:underline">📋 填入示例简�?/button>
+            <button onclick="saveResume()" class="text-xs text-slate-500 hover:underline">💾 保存到本�?/button>
           </div>
         </div>
         <div>
           <label class="text-xs text-slate-600">目标岗位 JD <span class="text-red-500">*</span></label>
           <select id="matchJobSelect" class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white">
-            <option value="">-- 从已记录中�?--</option>
+            <option value="">-- 从已记录中�?--</option>
           </select>
-          <textarea id="matchJD" rows="6" placeholder="岗位职责�?#10;1. 负责前端架构设计&#10;2. 推动性能优化..." class="w-full mt-2 px-3 py-2 border border-slate-300 rounded-lg text-sm"></textarea>
+          <textarea id="matchJD" rows="6" placeholder="岗位职责�?#10;1. 负责前端架构设计&#10;2. 推动性能优化..." class="w-full mt-2 px-3 py-2 border border-slate-300 rounded-lg text-sm"></textarea>
         </div>
         <button onclick="evaluateMatch()" id="matchBtn" class="w-full py-2 bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-lg text-sm hover:opacity-90">
-          �?开始评�?        </button>
+          �?开始评�?        </button>
       </div>
 
       <div id="matchLoading" class="hidden text-center py-8">
-        <div class="text-sm text-orange-600 mb-2">🤖 AI 正在评估你的匹配�?..</div>
+        <div class="text-sm text-orange-600 mb-2">🤖 AI 正在评估你的匹配�?..</div>
         <div class="ai-loading h-1 rounded mx-auto" style="width: 200px;"></div>
       </div>
 
@@ -380,7 +380,7 @@
     </div>
   </div>
 
-  <!-- ============ 命令面板（Ctrl+K�?=========== -->
+  <!-- ============ 命令面板（Ctrl+K�?=========== -->
   <div id="commandPalette" class="hidden fixed inset-0 z-[70] flex items-start justify-center pt-24 modal-backdrop">
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 fade-in overflow-hidden">
       <div class="flex items-center border-b border-slate-200 px-4 py-3">
@@ -399,11 +399,11 @@
         <h3 class="text-lg font-semibold flex items-center gap-2">
           <span>🔍</span>发现疑似重复
         </h3>
-        <button onclick="closeDupModal(true)" class="text-slate-400 hover:text-slate-600">�?/button>
+        <button onclick="closeDupModal(true)" class="text-slate-400 hover:text-slate-600">�?/button>
       </div>
 
       <div class="text-sm text-slate-600 mb-3">
-        你要添加的公�?<span class="font-semibold text-slate-800" id="dupNewCompany"></span>
+        你要添加的公�?<span class="font-semibold text-slate-800" id="dupNewCompany"></span>
         似乎和已有记录是同一家：
       </div>
 
@@ -416,7 +416,7 @@
           🔀 智能合并（补全空白字段）
         </button>
         <button onclick="dupSkip()" class="w-full py-2 border border-slate-300 rounded-lg text-sm hover:bg-slate-50">
-          �?创建新岗位（同公司不同岗�?        </button>
+          �?创建新岗位（同公司不同岗�?        </button>
         <button onclick="closeDupModal(true)" class="w-full py-2 text-sm text-slate-500">
           取消
         </button>
@@ -431,7 +431,7 @@
         <h3 class="text-lg font-semibold flex items-center gap-2">
           <span>📔</span>每日复盘
         </h3>
-        <button onclick="closeJournalModal()" class="text-slate-400 hover:text-slate-600">�?/button>
+        <button onclick="closeJournalModal()" class="text-slate-400 hover:text-slate-600">�?/button>
       </div>
 
       <div id="journalForm" class="space-y-3 mb-4">
@@ -445,15 +445,15 @@
             <select id="journalMood" class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white">
               <option value="great">😊 超棒</option>
               <option value="good">🙂 不错</option>
-              <option value="ok" selected>😐 一�?/option>
+              <option value="ok" selected>😐 一�?/option>
               <option value="bad">😟 焦虑</option>
               <option value="awful">😢 崩溃</option>
             </select>
           </div>
         </div>
         <div>
-          <label class="text-xs text-slate-600">今天的复�?/label>
-          <textarea id="journalContent" rows="6" placeholder="今天投了字节、腾�?..&#10;面试�?XX 公司，算法题没答上来...&#10;明天要准�?XXX..." class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm"></textarea>
+          <label class="text-xs text-slate-600">今天的复�?/label>
+          <textarea id="journalContent" rows="6" placeholder="今天投了字节、腾�?..&#10;面试�?XX 公司，算法题没答上来...&#10;明天要准�?XXX..." class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm"></textarea>
         </div>
         <div class="flex gap-2">
           <button onclick="saveJournal()" id="journalSaveBtn" class="flex-1 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">💾 保存</button>
@@ -473,7 +473,7 @@
         <h3 class="text-lg font-semibold flex items-center gap-2">
           <span>🎙</span>AI 面试复盘
         </h3>
-        <button onclick="closeReviewModal()" class="text-slate-400 hover:text-slate-600">�?/button>
+        <button onclick="closeReviewModal()" class="text-slate-400 hover:text-slate-600">�?/button>
       </div>
 
       <div id="reviewForm" class="space-y-3 mb-4">
@@ -485,8 +485,8 @@
         </div>
         <div>
           <label class="text-xs text-slate-600">面试复盘 <span class="text-red-500">*</span></label>
-          <textarea id="reviewText" rows="6" placeholder="面试官问�?XXX，我回答�?XXX...&#10;&#10;或者：&#10;Q1: 自我介绍�?#10;A1: 我说�?XXX...&#10;Q2: 项目难点�?#10;A2: 我答�?XXX..." class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm"></textarea>
-          <div class="text-xs text-slate-400 mt-1">支持录音转写、笔记、口述各种格式，至少 30 �?/div>
+          <textarea id="reviewText" rows="6" placeholder="面试官问�?XXX，我回答�?XXX...&#10;&#10;或者：&#10;Q1: 自我介绍�?#10;A1: 我说�?XXX...&#10;Q2: 项目难点�?#10;A2: 我答�?XXX..." class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm"></textarea>
+          <div class="text-xs text-slate-400 mt-1">支持录音转写、笔记、口述各种格式，至少 30 �?/div>
         </div>
         <button onclick="generateReview()" id="reviewBtn" class="w-full py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg text-sm hover:opacity-90">
           🎙 AI 复盘分析
@@ -511,7 +511,7 @@
         <h3 class="text-lg font-semibold flex items-center gap-2">
           <span>✉️</span>AI 投递信草稿
         </h3>
-        <button onclick="closeLetterModal()" class="text-slate-400 hover:text-slate-600">�?/button>
+        <button onclick="closeLetterModal()" class="text-slate-400 hover:text-slate-600">�?/button>
       </div>
 
       <div id="letterForm" class="space-y-3 mb-4">
@@ -522,9 +522,9 @@
           </select>
         </div>
         <div>
-          <label class="text-xs text-slate-600">你的简历（粘贴文本�?/label>
-          <textarea id="letterResume" rows="5" placeholder="姓名 / 学历 / 技�?/ 项目经验..." class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm"></textarea>
-          <button onclick="fillLetterSample()" class="text-xs text-blue-600 hover:underline mt-1">📋 填入示例简�?/button>
+          <label class="text-xs text-slate-600">你的简历（粘贴文本�?/label>
+          <textarea id="letterResume" rows="5" placeholder="姓名 / 学历 / 技�?/ 项目经验..." class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm"></textarea>
+          <button onclick="fillLetterSample()" class="text-xs text-blue-600 hover:underline mt-1">📋 填入示例简�?/button>
         </div>
         <button onclick="generateLetter()" id="letterBtn" class="w-full py-2 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-lg text-sm hover:opacity-90">
           ✉️ 生成 3 封投递信
@@ -549,12 +549,12 @@
         <h3 class="text-lg font-semibold flex items-center gap-2">
           <span>💼</span>登录求职记录
         </h3>
-        <button onclick="closeAuth()" class="text-slate-400 hover:text-slate-600">�?/button>
+        <button onclick="closeAuth()" class="text-slate-400 hover:text-slate-600">�?/button>
       </div>
-      <p class="text-xs text-slate-500 mb-4">输入邮箱，我们会发一个登录链接给�?/p>
+      <p class="text-xs text-slate-500 mb-4">输入邮箱，我们会发一个登录链接给�?/p>
       <form id="authForm" class="space-y-3">
         <input id="authEmail" type="email" required placeholder="you@example.com" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:border-blue-500">
-        <button type="submit" class="w-full py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">发送登录链�?/button>
+        <button type="submit" class="w-full py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">发送登录链�?/button>
         <button type="button" onclick="closeAuth()" class="w-full text-xs text-slate-400 mt-2">取消</button>
       </form>
     </div>
@@ -562,7 +562,7 @@
 
   <!-- ============ 右下角浮动按钮（双按钮）============ -->
   <div class="fixed bottom-6 right-6 z-40 flex flex-col gap-3 items-end">
-    <button id="addBtn" class="w-14 h-14 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 text-2xl" title="新增单条 (Ctrl+K �?A)">+</button>
+    <button id="addBtn" class="w-14 h-14 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 text-2xl" title="新增单条 (Ctrl+K �?A)">+</button>
     <button id="batchBtn" class="w-14 h-14 bg-purple-600 text-white rounded-full shadow-lg hover:bg-purple-700 text-xl" title="批量识别">📸</button>
   </div>
   <div class="fixed bottom-6 left-6 z-30 text-xs text-slate-400 hidden md:flex items-center gap-1 bg-white/80 backdrop-blur px-2 py-1 rounded">
@@ -578,13 +578,13 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFodmViYWl4cHhra2Fva29uaWl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4NzM4NDMsImV4cCI6MjEwMDQ0OTg0M30.Ih6uOU6mp9cniZl9vgpKgo0C7JTut3ruu5BZnRcmUvg';
     const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    let batchJobs = []; // 批量识别的临时结�?    let selectedImage = null; // 提前声明，避�?openForm �?resetUpload 引用未初始化
+    let batchJobs = []; // 批量识别的临时结�?    let selectedImage = null; // 提前声明，避�?openForm �?resetUpload 引用未初始化
 
     // 状态映射（提前声明，renderDashboard 会用到）
-    const STATUS_LABELS_ALL = { wishlist: '想投', applied: '已投�?, screen: '笔试/筛�?, interview: '面试�?, offer: 'Offer', rejected: '已拒�? };
+    const STATUS_LABELS_ALL = { wishlist: '想投', applied: '已投递', screen: '笔试/筛选', interview: '面试中', offer: 'Offer', rejected: '已拒绝' };
     const STATUS_ORDER = ['wishlist', 'applied', 'screen', 'interview', 'offer', 'rejected'];
-    const STATUS_LABELS = STATUS_LABELS_ALL; // 兼容旧引�?
-    // ========== �?IIFE 开头预先挂载所�?onclick 需要的函数 ==========
+    const STATUS_LABELS = STATUS_LABELS_ALL; // 兼容旧引�?
+    // ========== �?IIFE 开头预先挂载所�?onclick 需要的函数 ==========
     // 这样 HTML 内的 onclick 立刻就能找到（不必等后续赋值）
     window.openAuth = () => document.getElementById('authModal').classList.remove('hidden');
     window.closeAuth = () => document.getElementById('authModal').classList.add('hidden');
@@ -640,7 +640,7 @@
       if (currentUser) {
         el.innerHTML = `
           <span class="text-slate-500 text-xs hidden sm:inline">${currentUser.email}</span>
-          <button onclick="logout()" class="px-3 py-1.5 text-xs border border-slate-300 rounded-lg hover:bg-slate-50">退�?/button>
+          <button onclick="logout()" class="px-3 py-1.5 text-xs border border-slate-300 rounded-lg hover:bg-slate-50">退�?/button>
         `;
       } else {
         el.innerHTML = `<button onclick="openAuth()" class="px-4 py-1.5 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700">登录</button>`;
@@ -659,9 +659,9 @@
         email,
         options: { emailRedirectTo: window.location.href }
       });
-      btn.disabled = false; btn.textContent = '发送登录链�?;
+      btn.disabled = false; btn.textContent = '发送登录链�?;
       if (error) { alert('发送失败：' + error.message); return; }
-      alert('登录邮件已发送！请到邮箱点击链接完成登录�?);
+      alert('登录邮件已发送！请到邮箱点击链接完成登录�?);
       closeAuth();
     });
 
@@ -708,7 +708,7 @@
       } else if (sortBy === 'company') {
         list.sort((a, b) => (a.company || '').localeCompare(b.company || '', 'zh'));
       } else if (sortBy === 'update_date') {
-        // 按更新日期倒序（最新的在前），没填的排到最�?        list.sort((a, b) => {
+        // 按更新日期倒序（最新的在前），没填的排到最�?        list.sort((a, b) => {
           if (!a.update_date && !b.update_date) return 0;
           if (!a.update_date) return 1;
           if (!b.update_date) return -1;
@@ -727,7 +727,7 @@
       }
 
       document.getElementById('jobList').innerHTML = list.map(jobCard).join('');
-      document.getElementById('totalCount').textContent = `�?${list.length} 条`;
+      document.getElementById('totalCount').textContent = `�?${list.length} 条`;
       document.getElementById('emptyState').classList.toggle('hidden', list.length > 0);
 
       renderDashboard(list);
@@ -742,7 +742,7 @@
       if (!list.length) { dashboard.classList.add('hidden'); return; }
       dashboard.classList.remove('hidden');
 
-      // KPI（永远要显示�?      try {
+      // KPI（永远要显示�?      try {
         const now = new Date();
         const weekFromNow = new Date(now.getTime() + 7 * 24 * 3600 * 1000);
         const weekFromNowStr = weekFromNow.toISOString().slice(0, 10);
@@ -758,11 +758,11 @@
         console.error('[KPI 失败]', err);
       }
 
-      // 图表（包 try/catch�?      try { renderCharts(list); } catch (err) { console.error('[图表失败]', err); }
+      // 图表（包 try/catch�?      try { renderCharts(list); } catch (err) { console.error('[图表失败]', err); }
     }
 
     function renderCharts(list) {
-      // 状态分�?      const statusCount = {};
+      // 状态分�?      const statusCount = {};
       const labelsMap = (typeof STATUS_LABELS_ALL === 'object' && STATUS_LABELS_ALL) ? STATUS_LABELS_ALL : {};
       const order = Array.isArray(STATUS_ORDER) ? STATUS_ORDER : Object.keys(labelsMap);
       Object.keys(labelsMap).forEach(s => statusCount[s] = 0);
@@ -803,7 +803,7 @@
           }).join('') + '</div>';
       }
 
-      // 行业分布（优先用 j.industry 字段，没有再�?notes 提取�?      const industryCount = {};
+      // 行业分布（优先用 j.industry 字段，没有再�?notes 提取�?      const industryCount = {};
       list.forEach(j => {
         let ind = (j.industry || '').trim();
         if (!ind) ind = extractIndustry(j.notes);
@@ -832,7 +832,7 @@
           console.error('[Chart 渲染失败-行业]', err);
         }
       } else if (sorted.length) {
-        // 降级：文字版柱状�?        const max = sorted[0][1];
+        // 降级：文字版柱状�?        const max = sorted[0][1];
         ctx2.parentElement.innerHTML = '<div class="space-y-2 pt-2">' +
           sorted.map(([name, count]) => {
             const w = ((count / max) * 100).toFixed(0);
@@ -851,22 +851,22 @@
 
     function extractIndustry(notes) {
       if (!notes) return null;
-      const industries = ['互联�?, '通信', '电子', '半导�?, '汽车', '新能�?, '金融', '银行', '保险',
-                          '教育', '医疗', '医药', '游戏', '传媒', '广告', '咨询', '制�?, '能源',
-                          '化工', '环保', '快消', '零售', '物流', '房地�?, '建筑', '人工智能', 'AI',
-                          '机器�?, '光电', '智能制�?, '生物', '文旅', '酒店'];
+      const industries = ['互联�?, '通信', '电子', '半导�?, '汽车', '新能�?, '金融', '银行', '保险',
+                          '教育', '医疗', '医药', '游戏', '传媒', '广告', '咨询', '制�?, '能源',
+                          '化工', '环保', '快消', '零售', '物流', '房地�?, '建筑', '人工智能', 'AI',
+                          '机器�?, '光电', '智能制�?, '生物', '文旅', '酒店'];
       for (const ind of industries) {
         if (notes.includes(ind)) return ind;
       }
-      // 提取第一�?·"前面的部分作为粗分类
+      // 提取第一�?·"前面的部分作为粗分类
       const parts = notes.split('·').map(s => s.trim());
       return parts[0] || null;
     }
 
-    // ========== 导出 Excel（CSV�?===========
+    // ========== 导出 Excel（CSV�?===========
     window.exportExcel = () => {
       if (!allJobs.length) { alert('暂无记录'); return; }
-      const headers = ['公司', '职位', '企业性质', '所属行�?, '状�?, '截止日期', '信息更新日期', '工作地点', '薪资', '链接', '备注', '添加时间'];
+      const headers = ['公司', '职位', '企业性质', '所属行�?, '状�?, '截止日期', '信息更新日期', '工作地点', '薪资', '链接', '备注', '添加时间'];
       const rows = allJobs.map(j => [
         j.company, j.position, j.enterprise_type || '', j.industry || '', STATUS_LABELS_ALL[j.status] || j.status,
         j.deadline || '', j.update_date || '', j.location || '', j.salary || '',
@@ -881,7 +881,7 @@
             : s;
         }).join(',')
       ).join('\n');
-      // �?BOM �?Excel 正确识别 UTF-8
+      // �?BOM �?Excel 正确识别 UTF-8
       const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -933,22 +933,22 @@
       return String(s || '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
     }
 
-    // ========== 日期格式归一�?==========
-    // 支持：YYYY-MM-DD / YYYY/MM/DD / YYYY.MM.DD / YYYY.M.D / DD/MM/YYYY / M/D/YYYY / �?截止"前缀
-    // 输出：YYYY-MM-DD �?null
+    // ========== 日期格式归一�?==========
+    // 支持：YYYY-MM-DD / YYYY/MM/DD / YYYY.MM.DD / YYYY.M.D / DD/MM/YYYY / M/D/YYYY / �?截止"前缀
+    // 输出：YYYY-MM-DD �?null
     function normalizeDate(input) {
       if (!input) return null;
       let s = String(input).trim();
       if (!s) return null;
-      // 去掉"截止"�?投递截�?等前缀
-      s = s.replace(/^(截止|投递截止|网申截止|报名截止)[�?]*\s*/i, '');
+      // 去掉"截止"�?投递截�?等前缀
+      s = s.replace(/^(截止|投递截止|网申截止|报名截止)[�?]*\s*/i, '');
       // 提取第一个看起来像日期的片段
       const match = s.match(/(\d{4})[.\-/年](\d{1,2})[.\-/月](\d{1,2})/);
       if (match) {
         const [, y, m, d] = match;
         return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
       }
-      // DD/MM/YYYY 形式（飞书截图常见，比如"24/2/2026"�?      const dmMatch = s.match(/(\d{1,2})[.\-/月](\d{1,2})[.\-/](\d{2,4})/);
+      // DD/MM/YYYY 形式（飞书截图常见，比如"24/2/2026"�?      const dmMatch = s.match(/(\d{1,2})[.\-/月](\d{1,2})[.\-/](\d{2,4})/);
       if (dmMatch) {
         let [, d, m, y] = dmMatch;
         if (y.length === 2) y = '20' + y;
@@ -985,9 +985,9 @@
     window.editJob = (id) => { const j = allJobs.find(x => x.id === id); if (j) openForm(j); };
 
     window.deleteJob = async (id) => {
-      if (!confirm('确定删除这条记录�?)) return;
+      if (!confirm('确定删除这条记录�?)) return;
       const { error } = await sb.from('jobs').delete().eq('id', id);
-      if (error) { alert('删除失败�? + error.message); return; }
+      if (error) { alert('删除失败�? + error.message); return; }
       await loadJobs();
     };
 
@@ -1010,7 +1010,7 @@
         notes: document.getElementById('fNotes').value.trim()
       };
 
-      // 新增时才检查去�?      if (!id && payload.company) {
+      // 新增时才检查去�?      if (!id && payload.company) {
         const companies = [...new Set(allJobs.map(j => j.company))];
         if (companies.length > 0 && companies.length <= 200) {
           try {
@@ -1024,28 +1024,28 @@
               const choice = await showDupModal(payload.company, matched, matchedJobs, dupData.data.reason || '');
               if (choice === 'cancel') return;
               if (choice === 'merge') {
-                // 智能字段合并：只�?旧记录为空、新表单有�?的字�?                const target = matchedJobs[0];
+                // 智能字段合并：只�?旧记录为空、新表单有�?的字�?                const target = matchedJobs[0];
                 const updates = {};
                 const fillFields = ['deadline', 'salary', 'location', 'enterprise_type', 'industry', 'link'];
                 for (const f of fillFields) {
                   if (!target[f] && payload[f]) updates[f] = payload[f];
                 }
                 // 把新岗位作为追加备注（保留信息历史）
-                const newLine = `[${new Date().toLocaleDateString('zh-CN')}] ${payload.position}�?{STATUS_LABELS[payload.status] || payload.status}）`;
+                const newLine = `[${new Date().toLocaleDateString('zh-CN')}] ${payload.position}�?{STATUS_LABELS[payload.status] || payload.status}）`;
                 updates.notes = (target.notes ? target.notes + '\n' : '') + newLine;
 
                 const { error: mergeErr } = await sb.from('jobs').update(updates).eq('id', target.id);
-                if (mergeErr) { alert('合并失败�? + mergeErr.message); return; }
+                if (mergeErr) { alert('合并失败�? + mergeErr.message); return; }
                 closeForm();
                 await loadJobs();
                 const filledKeys = Object.keys(updates).filter(k => k !== 'notes');
                 const msg = filledKeys.length
-                  ? `�?已合并到�?{matched}」，补充�?${filledKeys.length} 个字段`
-                  : `�?已合并到�?{matched}」，追加了新岗位备注`;
+                  ? `�?已合并到�?{matched}」，补充�?${filledKeys.length} 个字段`
+                  : `�?已合并到�?{matched}」，追加了新岗位备注`;
                 alert(msg);
                 return;
               }
-              // choice === 'skip' 继续创建新记�?            }
+              // choice === 'skip' 继续创建新记�?            }
           } catch (err) {
             console.warn('去重检查失败，继续保存', err);
           }
@@ -1055,23 +1055,23 @@
       const { error } = id
         ? await sb.from('jobs').update(payload).eq('id', id)
         : await sb.from('jobs').insert(payload);
-      if (error) { alert('保存失败�? + error.message); return; }
+      if (error) { alert('保存失败�? + error.message); return; }
       closeForm();
       await loadJobs();
     });
 
     // ========== 命令面板 Ctrl+K ==========
     const COMMANDS = [
-      { id: 'add', icon: '�?, title: '新增记录', shortcut: 'A', action: () => { if (!currentUser) openAuth(); else openForm(); } },
+      { id: 'add', icon: '�?, title: '新增记录', shortcut: 'A', action: () => { if (!currentUser) openAuth(); else openForm(); } },
       { id: 'batch', icon: '📸', title: '批量识别截图', action: () => { if (!currentUser) openAuth(); else document.getElementById('batchImageInput').click(); } },
-      { id: 'interview', icon: '🎯', title: 'AI 面试题生�?, action: openInterviewModal },
-      { id: 'match', icon: '�?, title: 'AI 匹配度评�?, action: openMatchModal },
+      { id: 'interview', icon: '🎯', title: 'AI 面试题生�?, action: openInterviewModal },
+      { id: 'match', icon: '�?, title: 'AI 匹配度评�?, action: openMatchModal },
       { id: 'letter', icon: '✉️', title: 'AI 投递信草稿', action: openLetterModal },
       { id: 'review', icon: '🎙', title: 'AI 面试复盘', action: openReviewModal },
       { id: 'journal', icon: '📔', title: '每日复盘笔记', action: openJournalModal },
       { id: 'export', icon: '📥', title: '导出 Excel', action: exportExcel },
       { id: 'dashboard', icon: '📊', title: '查看进度看板', action: () => { document.getElementById('dashboard').scrollIntoView({ behavior: 'smooth' }); } },
-      { id: 'logout', icon: '🚪', title: '退出登�?, action: logout },
+      { id: 'logout', icon: '🚪', title: '退出登�?, action: logout },
     ];
 
     let cmdSelectedIdx = 0;
@@ -1099,7 +1099,7 @@
         : COMMANDS;
       results = results.concat(matchedCmds.map(c => ({ type: 'cmd', ...c })));
 
-      // 匹配记录（公司名 / 岗位�?      if (q.length >= 1) {
+      // 匹配记录（公司名 / 岗位�?      if (q.length >= 1) {
         const matchedJobs = allJobs.filter(j =>
           (j.company || '').toLowerCase().includes(q) ||
           (j.position || '').toLowerCase().includes(q)
@@ -1119,7 +1119,7 @@
 
       const resultsEl = document.getElementById('cmdResults');
       if (!results.length) {
-        resultsEl.innerHTML = '<div class="p-8 text-center text-slate-400 text-sm">无匹配结�?/div>';
+        resultsEl.innerHTML = '<div class="p-8 text-center text-slate-400 text-sm">无匹配结�?/div>';
         return;
       }
       resultsEl.innerHTML = results.map((r, i) => `
@@ -1168,14 +1168,14 @@
       });
     }
 
-    // 全局快捷�?    document.addEventListener('keydown', (e) => {
-      // Ctrl+K �?Cmd+K 打开命令面板
+    // 全局快捷�?    document.addEventListener('keydown', (e) => {
+      // Ctrl+K �?Cmd+K 打开命令面板
       if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
         e.preventDefault();
         openCommandPalette();
         return;
       }
-      // Esc 关闭所有弹�?      if (e.key === 'Escape') {
+      // Esc 关闭所有弹�?      if (e.key === 'Escape') {
         closeCommandPalette();
         if (!document.getElementById('commandPalette').classList.contains('hidden')) return;
       }
@@ -1193,9 +1193,9 @@
       const candEl = document.getElementById('dupCandidate');
       candEl.innerHTML = `
         <div class="font-semibold text-slate-800 mb-1">${escapeHtml(matched)}</div>
-        <div class="text-xs text-slate-600">已有 ${matchedJobs.length} 个岗位：${matchedJobs.map(j => escapeHtml(j.position)).slice(0, 3).join('�?)}${matchedJobs.length > 3 ? '...' : ''}</div>
+        <div class="text-xs text-slate-600">已有 ${matchedJobs.length} 个岗位：${matchedJobs.map(j => escapeHtml(j.position)).slice(0, 3).join('�?)}${matchedJobs.length > 3 ? '...' : ''}</div>
       `;
-      document.getElementById('dupReason').textContent = reason ? 'AI 判断�? + reason : '';
+      document.getElementById('dupReason').textContent = reason ? 'AI 判断�? + reason : '';
       document.getElementById('dupModal').classList.remove('hidden');
       return new Promise(resolve => { dupResolve = resolve; });
     }
@@ -1250,8 +1250,8 @@
       if (file) handleImage(file, 'single');
     });
 
-    // ========== 全局粘贴上传（Ctrl+V 截图�?===========
-    // 优先级：表单弹窗 �?single；批量弹�?�?batch；其他情�?�?默认 batch（最常用�?    document.addEventListener('paste', (e) => {
+    // ========== 全局粘贴上传（Ctrl+V 截图�?===========
+    // 优先级：表单弹窗 �?single；批量弹�?�?batch；其他情�?�?默认 batch（最常用�?    document.addEventListener('paste', (e) => {
       if (!currentUser) return; // 没登录不响应
 
       const items = e.clipboardData?.items;
@@ -1266,7 +1266,7 @@
             const batchOpen = !document.getElementById('batchModal').classList.contains('hidden');
             const mode = formOpen ? 'single' : 'batch';
             handleImage(file, mode);
-            showPasteHint(mode === 'single' ? '�?已粘贴截图，AI 识别�?..' : '�?已粘贴截图，批量识别�?..');
+            showPasteHint(mode === 'single' ? '�?已粘贴截图，AI 识别�?..' : '�?已粘贴截图，批量识别�?..');
           }
           return;
         }
@@ -1282,7 +1282,7 @@
     }
 
     async function handleImage(file, mode = 'single') {
-      if (file.size > 5 * 1024 * 1024) { alert('图片太大�?5MB），请压缩后重试'); return; }
+      if (file.size > 5 * 1024 * 1024) { alert('图片太大�?5MB），请压缩后重试'); return; }
       const base64 = await fileToBase64(file);
       selectedImage = { base64, mimeType: file.type };
 
@@ -1330,10 +1330,10 @@
         if (!data?.success) throw new Error(data?.error || '识别失败');
 
         if (mode === 'batch') {
-          // 批量模式：弹出预览窗�?          batchJobs = data.data.jobs || [];
+          // 批量模式：弹出预览窗�?          batchJobs = data.data.jobs || [];
           showBatchPreview();
         } else {
-          // 单张模式：填到表�?          const fields = data.data;
+          // 单张模式：填到表�?          const fields = data.data;
           if (fields.company && !document.getElementById('fCompany').value) document.getElementById('fCompany').value = fields.company;
           if (fields.position && !document.getElementById('fPosition').value) document.getElementById('fPosition').value = fields.position;
           if (fields.salary && !document.getElementById('fSalary').value) document.getElementById('fSalary').value = fields.salary;
@@ -1350,10 +1350,10 @@
       } catch (err) {
         if (mode === 'single') {
           document.getElementById('aiLoading').classList.add('hidden');
-          document.getElementById('aiError').textContent = '识别失败�? + err.message + '（请手动填写�?;
+          document.getElementById('aiError').textContent = '识别失败�? + err.message + '（请手动填写�?;
           document.getElementById('aiError').classList.remove('hidden');
         } else {
-          alert('批量识别失败�? + err.message);
+          alert('批量识别失败�? + err.message);
         }
         console.error('OCR 错误', err);
       }
@@ -1376,7 +1376,7 @@
         return;
       }
 
-      document.getElementById('batchSummary').textContent = `�?识别�?${batchJobs.length} 条记录，请确认并选择入库：`;
+      document.getElementById('batchSummary').textContent = `�?识别�?${batchJobs.length} 条记录，请确认并选择入库：`;
       document.getElementById('batchSummary').className = 'text-sm text-slate-700 mb-3 p-3 bg-green-50 rounded-lg';
 
       const listEl = document.getElementById('batchList');
@@ -1385,7 +1385,7 @@
           <input type="checkbox" checked data-idx="${i}" class="batch-check mt-1">
           <div class="flex-1 min-w-0 text-sm">
             <div class="flex items-center gap-2 flex-wrap">
-              <span class="font-semibold text-slate-800">${escapeHtml(j.company || '未识�?)}</span>
+              <span class="font-semibold text-slate-800">${escapeHtml(j.company || '未识�?)}</span>
               ${j.deadline ? `<span class="text-xs px-2 py-0.5 bg-orange-100 text-orange-700 rounded">截止 ${j.deadline}</span>` : ''}
               ${j.level ? `<span class="text-xs px-2 py-0.5 bg-blue-100 text-blue-700 rounded">${escapeHtml(j.level)}</span>` : ''}
               ${j.enterprise_type ? `<span class="text-xs px-2 py-0.5 bg-purple-100 text-purple-700 rounded">${escapeHtml(j.enterprise_type)}</span>` : ''}
@@ -1422,7 +1422,7 @@
 
     window.batchSave = async () => {
       const checked = Array.from(document.querySelectorAll('.batch-check:checked'));
-      if (!checked.length) { alert('请至少勾选一�?); return; }
+      if (!checked.length) { alert('请至少勾选一�?); return; }
 
       const status = document.getElementById('batchDefaultStatus').value;
       const btn = document.getElementById('batchSaveBtn');
@@ -1431,14 +1431,14 @@
       const selected = checked.map(c => batchJobs[parseInt(c.dataset.idx)]);
       const validSelected = selected.filter(j => j.company);
 
-      if (!validSelected.length) { alert('没有有效的记录（含公司名�?); btn.disabled = false; btn.textContent = '批量入库'; return; }
+      if (!validSelected.length) { alert('没有有效的记录（含公司名�?); btn.disabled = false; btn.textContent = '批量入库'; return; }
 
-      // ========== 去重检�?==========
+      // ========== 去重检�?==========
       const existingCompanies = [...new Set(allJobs.map(j => j.company))];
       const newCompanies = [...new Set(validSelected.map(j => j.company))];
 
-      const dupMap = new Map(); // key: 新公司名, value: 已有公司�?      if (existingCompanies.length > 0) {
-        btn.textContent = '🤖 AI 去重检�?..';
+      const dupMap = new Map(); // key: 新公司名, value: 已有公司�?      if (existingCompanies.length > 0) {
+        btn.textContent = '🤖 AI 去重检�?..';
         for (const newCo of newCompanies) {
           try {
             const { data: dupData } = await sb.functions.invoke('dedup-company', {
@@ -1448,13 +1448,13 @@
               dupMap.set(newCo, existingCompanies[dupData.data.matchedIndex]);
             }
           } catch (err) {
-            console.warn(`去重检测失�?[${newCo}]:`, err);
+            console.warn(`去重检测失�?[${newCo}]:`, err);
           }
         }
       }
 
       // 分类：新公司 vs 重复公司
-      const toCreate = []; // 新公司（直接插入�?      const toMerge = [];   // 重复公司（追加岗位备注）
+      const toCreate = []; // 新公司（直接插入�?      const toMerge = [];   // 重复公司（追加岗位备注）
 
       for (const j of validSelected) {
         if (dupMap.has(j.company)) {
@@ -1465,13 +1465,13 @@
       }
 
       // 弹窗告知用户
-      let msg = `�?${validSelected.length} 条记录待入库\n`;
-      msg += `📦 新建�?{toCreate.length} 条\n`;
+      let msg = `�?${validSelected.length} 条记录待入库\n`;
+      msg += `📦 新建�?{toCreate.length} 条\n`;
       msg += `🔀 合并到已有：${toMerge.length} 条\n\n`;
       if (toMerge.length) {
         msg += `合并明细：\n`;
         toMerge.forEach(({ job, existingCompany }) => {
-          msg += `  �?"${job.company}" �?合并�?"${existingCompany}"\n`;
+          msg += `  �?"${job.company}" �?合并�?"${existingCompany}"\n`;
         });
       }
       msg += `\n继续入库？`;
@@ -1480,10 +1480,10 @@
         return;
       }
 
-      btn.textContent = '入库�?..';
+      btn.textContent = '入库�?..';
 
       // ========== 执行插入 + 合并 ==========
-      // 1) 创建新公�?      const createPayloads = toCreate.map(j => ({
+      // 1) 创建新公�?      const createPayloads = toCreate.map(j => ({
         user_id: currentUser.id,
         company: j.company,
         position: j.position || '未知岗位',
@@ -1498,13 +1498,13 @@
 
       if (createPayloads.length) {
         const { error: createErr } = await sb.from('jobs').insert(createPayloads);
-        if (createErr) { alert('新建失败�? + createErr.message); btn.disabled = false; btn.textContent = '批量入库'; return; }
+        if (createErr) { alert('新建失败�? + createErr.message); btn.disabled = false; btn.textContent = '批量入库'; return; }
       }
 
-      // 2) 合并到已有公�?      for (const { job, existingCompany } of toMerge) {
+      // 2) 合并到已有公�?      for (const { job, existingCompany } of toMerge) {
         const existingJobs = allJobs.filter(j => j.company === existingCompany);
         if (!existingJobs.length) {
-          // 理论不该出现，但兜底：当成新�?          await sb.from('jobs').insert({
+          // 理论不该出现，但兜底：当成新�?          await sb.from('jobs').insert({
             user_id: currentUser.id,
             company: job.company,
             position: job.position || '未知岗位',
@@ -1524,7 +1524,7 @@
         for (const f of fillFields) {
           if (!target[f] && job[f]) updates[f] = job[f];
         }
-        const newLine = `[${new Date().toLocaleDateString('zh-CN')}] ${job.position || '未知岗位'}�?{STATUS_LABELS[status] || status}）`;
+        const newLine = `[${new Date().toLocaleDateString('zh-CN')}] ${job.position || '未知岗位'}�?{STATUS_LABELS[status] || status}）`;
         updates.notes = (target.notes ? target.notes + '\n' : '') + newLine;
         await sb.from('jobs').update(updates).eq('id', target.id);
       }
@@ -1534,13 +1534,13 @@
       await loadJobs();
 
       // 结果反馈
-      let resultMsg = `�?入库完成！\n`;
+      let resultMsg = `�?入库完成！\n`;
       resultMsg += `📦 新建 ${toCreate.length} 条\n`;
       resultMsg += `🔀 合并 ${toMerge.length} 条\n`;
       if (toMerge.length) {
         resultMsg += `\n合并明细：\n`;
         toMerge.forEach(({ job, existingCompany }) => {
-          resultMsg += `  �?"${job.company}" �?"${existingCompany}"\n`;
+          resultMsg += `  �?"${job.company}" �?"${existingCompany}"\n`;
         });
       }
       alert(resultMsg);
@@ -1561,10 +1561,10 @@
     window.generateQuestions = async () => {
       const company = document.getElementById('iqCompany').value.trim();
       const position = document.getElementById('iqPosition').value.trim();
-      if (!position) { alert('请输入岗�?); return; }
+      if (!position) { alert('请输入岗�?); return; }
 
       const btn = document.getElementById('iqBtn');
-      btn.disabled = true; btn.textContent = '生成�?..';
+      btn.disabled = true; btn.textContent = '生成�?..';
       document.getElementById('iqResult').classList.add('hidden');
       document.getElementById('iqError').classList.add('hidden');
       document.getElementById('iqLoading').classList.remove('hidden');
@@ -1578,7 +1578,7 @@
 
         const questions = data.data.questions || [];
         const resultEl = document.getElementById('iqResult');
-        const categoryColors = { '技�?: 'bg-blue-100 text-blue-700', '项目': 'bg-green-100 text-green-700', '行为': 'bg-purple-100 text-purple-700' };
+        const categoryColors = { '技�?: 'bg-blue-100 text-blue-700', '项目': 'bg-green-100 text-green-700', '行为': 'bg-purple-100 text-purple-700' };
 
         resultEl.innerHTML = questions.map((q, i) => `
           <div class="border border-slate-200 rounded-lg p-3">
@@ -1594,32 +1594,32 @@
         document.getElementById('iqResult').classList.remove('hidden');
       } catch (err) {
         document.getElementById('iqLoading').classList.add('hidden');
-        document.getElementById('iqError').textContent = '生成失败�? + err.message;
+        document.getElementById('iqError').textContent = '生成失败�? + err.message;
         document.getElementById('iqError').classList.remove('hidden');
       } finally {
         btn.disabled = false; btn.textContent = '🚀 生成 10 道面试题';
       }
     };
 
-    // ========== 岗位匹配度评�?==========
+    // ========== 岗位匹配度评�?==========
     window.openMatchModal = () => {
       document.getElementById('matchModal').classList.remove('hidden');
       document.getElementById('matchResult').classList.add('hidden');
       document.getElementById('matchLoading').classList.add('hidden');
       document.getElementById('matchError').classList.add('hidden');
       document.getElementById('matchForm').classList.remove('hidden');
-      // 加载保存的简�?      const saved = localStorage.getItem('resume_text');
+      // 加载保存的简�?      const saved = localStorage.getItem('resume_text');
       if (saved) document.getElementById('matchResume').value = saved;
       // 填充岗位下拉
       const sel = document.getElementById('matchJobSelect');
-      sel.innerHTML = '<option value="">-- 从已记录中�?--</option>' +
+      sel.innerHTML = '<option value="">-- 从已记录中�?--</option>' +
         allJobs.map(j => `<option value="${j.id}" data-company="${escapeHtml(j.company)}" data-position="${escapeHtml(j.position)}">${escapeHtml(j.company)} - ${escapeHtml(j.position)}</option>`).join('');
       sel.onchange = (e) => {
         const opt = sel.options[sel.selectedIndex];
         if (opt.value) {
           const j = allJobs.find(x => x.id === opt.value);
           if (j) {
-            document.getElementById('matchJD').value = `公司�?{j.company}\n岗位�?{j.position}\n地点�?{j.location || ''}\n备注�?{j.notes || ''}`.trim();
+            document.getElementById('matchJD').value = `公司�?{j.company}\n岗位�?{j.position}\n地点�?{j.location || ''}\n备注�?{j.notes || ''}`.trim();
           }
         }
       };
@@ -1627,28 +1627,28 @@
     window.closeMatchModal = () => document.getElementById('matchModal').classList.add('hidden');
 
     window.fillSampleResume = () => {
-      document.getElementById('matchResume').value = `姓名：张�?学历：本科（985 / 计算机科学）
+      document.getElementById('matchResume').value = `姓名：张�?学历：本科（985 / 计算机科学）
 技能：JavaScript, TypeScript, React, Vue, Node.js, Python, SQL
-项目经验�?1. 字节跳动 - 前端开发实习（2024.07-2024.12�?   - 负责内部运营平台前端开发，使用 React + TypeScript
-   - 推动首屏加载时间�?3s 优化�?1.2s
-   - 沉淀�?3 个通用组件�?2. 腾讯 - 微信小程序开发（2024.02-2024.06�?   - 独立完成 2 个小程序�?0 �?1
-   - DAU 峰�?50 �?
+项目经验�?1. 字节跳动 - 前端开发实习（2024.07-2024.12�?   - 负责内部运营平台前端开发，使用 React + TypeScript
+   - 推动首屏加载时间�?3s 优化�?1.2s
+   - 沉淀�?3 个通用组件�?2. 腾讯 - 微信小程序开发（2024.02-2024.06�?   - 独立完成 2 个小程序�?0 �?1
+   - DAU 峰�?50 �?
 获奖：ACM 区域赛银牌、互联网+ 大赛省金`;
     };
     window.saveResume = () => {
       const v = document.getElementById('matchResume').value;
       localStorage.setItem('resume_text', v);
-      alert('�?简历已保存到本地，下次自动填入');
+      alert('�?简历已保存到本地，下次自动填入');
     };
 
     window.evaluateMatch = async () => {
       const resume = document.getElementById('matchResume').value.trim();
       const jd = document.getElementById('matchJD').value.trim();
-      if (!resume) { alert('请填写简�?); return; }
-      if (!jd) { alert('请填�?JD 或从已记录中选择'); return; }
+      if (!resume) { alert('请填写简�?); return; }
+      if (!jd) { alert('请填�?JD 或从已记录中选择'); return; }
 
       const btn = document.getElementById('matchBtn');
-      btn.disabled = true; btn.textContent = '评估�?..';
+      btn.disabled = true; btn.textContent = '评估�?..';
       document.getElementById('matchResult').classList.add('hidden');
       document.getElementById('matchError').classList.add('hidden');
       document.getElementById('matchLoading').classList.remove('hidden');
@@ -1668,7 +1668,7 @@
         const resultEl = document.getElementById('matchResult');
         resultEl.innerHTML = `
           <div class="text-center p-6 rounded-xl border-2" style="border-color: ${scoreColor};">
-            <div class="text-xs text-slate-500 mb-1">综合匹配�?/div>
+            <div class="text-xs text-slate-500 mb-1">综合匹配�?/div>
             <div class="text-6xl font-bold" style="color: ${scoreColor};">${score}</div>
             <div class="text-sm text-slate-500 mt-1">/ 100</div>
             <div class="mt-3 inline-block px-3 py-1 rounded-full text-sm ${levelColor}">${escapeHtml(r.level || '')}</div>
@@ -1676,7 +1676,7 @@
           ${r.summary ? `<div class="mt-3 p-3 bg-slate-50 rounded-lg text-sm text-slate-700">📝 ${escapeHtml(r.summary)}</div>` : ''}
           ${(r.highlights && r.highlights.length) ? `
             <div class="mt-4">
-              <div class="text-sm font-semibold text-slate-700 mb-2">�?你的强项</div>
+              <div class="text-sm font-semibold text-slate-700 mb-2">�?你的强项</div>
               <div class="space-y-1">
                 ${r.highlights.map(h => `<div class="text-sm text-slate-600 pl-3 py-1 bg-green-50 rounded">${escapeHtml(h)}</div>`).join('')}
               </div>
@@ -1704,10 +1704,10 @@
         document.getElementById('matchResult').classList.remove('hidden');
       } catch (err) {
         document.getElementById('matchLoading').classList.add('hidden');
-        document.getElementById('matchError').textContent = '评估失败�? + err.message;
+        document.getElementById('matchError').textContent = '评估失败�? + err.message;
         document.getElementById('matchError').classList.remove('hidden');
       } finally {
-        btn.disabled = false; btn.textContent = '�?开始评�?;
+        btn.disabled = false; btn.textContent = '�?开始评�?;
       }
     };
 
@@ -1761,30 +1761,30 @@
       if (!date || !content) { alert('请填写日期和内容'); return; }
 
       const btn = document.getElementById('journalSaveBtn');
-      btn.disabled = true; btn.textContent = '保存�?..';
+      btn.disabled = true; btn.textContent = '保存�?..';
       const { error } = await sb.from('journals').upsert({
         user_id: currentUser.id,
         date, mood, content,
       }, { onConflict: 'user_id,date' });
       btn.disabled = false; btn.textContent = '💾 保存';
-      if (error) { alert('保存失败�? + error.message); return; }
+      if (error) { alert('保存失败�? + error.message); return; }
       document.getElementById('journalContent').value = '';
       await loadJournals();
-      alert('�?已保�?);
+      alert('�?已保�?);
     };
 
     window.deleteJournal = async (id) => {
-      if (!confirm('确定删除�?)) return;
+      if (!confirm('确定删除�?)) return;
       await sb.from('journals').delete().eq('id', id);
       await loadJournals();
     };
 
     window.generateWeeklyReport = async () => {
-      // 取最�?7 �?      const week = allJournals.slice(0, 7);
-      if (week.length < 2) { alert('至少需�?2 条复盘才能生成周�?); return; }
+      // 取最�?7 �?      const week = allJournals.slice(0, 7);
+      if (week.length < 2) { alert('至少需�?2 条复盘才能生成周�?); return; }
 
       const btn = document.getElementById('weeklyBtn');
-      btn.disabled = true; btn.textContent = '生成�?..';
+      btn.disabled = true; btn.textContent = '生成�?..';
       document.getElementById('weeklyResult').classList.add('hidden');
 
       try {
@@ -1802,18 +1802,18 @@
             <div class="text-sm text-slate-700 mb-3">${escapeHtml(r.overview || '')}</div>
             ${(r.achievements && r.achievements.length) ? `
               <div class="mt-2">
-                <div class="text-xs font-semibold text-slate-600 mb-1">�?本周亮点</div>
+                <div class="text-xs font-semibold text-slate-600 mb-1">�?本周亮点</div>
                 <div class="text-xs text-slate-600 space-y-1">
-                  ${r.achievements.map(a => `<div>�?${escapeHtml(a)}</div>`).join('')}
+                  ${r.achievements.map(a => `<div>�?${escapeHtml(a)}</div>`).join('')}
                 </div>
               </div>
             ` : ''}
-            ${r.moodTrend ? `<div class="mt-2 text-xs text-slate-600">💭 情绪�?{escapeHtml(r.moodTrend)}</div>` : ''}
+            ${r.moodTrend ? `<div class="mt-2 text-xs text-slate-600">💭 情绪�?{escapeHtml(r.moodTrend)}</div>` : ''}
             ${(r.suggestions && r.suggestions.length) ? `
               <div class="mt-2">
                 <div class="text-xs font-semibold text-slate-600 mb-1">🎯 下周建议</div>
                 <div class="text-xs text-slate-600 space-y-1">
-                  ${r.suggestions.map(s => `<div>�?${escapeHtml(s)}</div>`).join('')}
+                  ${r.suggestions.map(s => `<div>�?${escapeHtml(s)}</div>`).join('')}
                 </div>
               </div>
             ` : ''}
@@ -1822,7 +1822,7 @@
         `;
         resultEl.classList.remove('hidden');
       } catch (err) {
-        alert('生成失败�? + err.message);
+        alert('生成失败�? + err.message);
       } finally {
         btn.disabled = false; btn.textContent = '📊 AI 周报';
       }
@@ -1845,11 +1845,11 @@
     window.generateReview = async () => {
       const review = document.getElementById('reviewText').value.trim();
       const jobId = document.getElementById('reviewJobSelect').value;
-      if (!review) { alert('请输入复盘内�?); return; }
+      if (!review) { alert('请输入复盘内�?); return; }
       const job = jobId ? allJobs.find(j => j.id === jobId) : null;
 
       const btn = document.getElementById('reviewBtn');
-      btn.disabled = true; btn.textContent = '分析�?..';
+      btn.disabled = true; btn.textContent = '分析�?..';
       document.getElementById('reviewResult').classList.add('hidden');
       document.getElementById('reviewError').classList.add('hidden');
       document.getElementById('reviewLoading').classList.remove('hidden');
@@ -1874,7 +1874,7 @@
           ${tags ? `<div class="mt-3 flex flex-wrap gap-1">${tags}</div>` : ''}
           ${(r.highlights && r.highlights.length) ? `
             <div class="mt-3">
-              <div class="text-sm font-semibold text-slate-700 mb-2">�?表现亮点</div>
+              <div class="text-sm font-semibold text-slate-700 mb-2">�?表现亮点</div>
               <div class="space-y-1">
                 ${r.highlights.map(h => `<div class="text-sm text-slate-600 pl-3 py-1 bg-green-50 rounded">${escapeHtml(h)}</div>`).join('')}
               </div>
@@ -1882,7 +1882,7 @@
           ` : ''}
           ${(r.improvements && r.improvements.length) ? `
             <div class="mt-3">
-              <div class="text-sm font-semibold text-slate-700 mb-2">⚠️ 待改�?/div>
+              <div class="text-sm font-semibold text-slate-700 mb-2">⚠️ 待改�?/div>
               <div class="space-y-1">
                 ${r.improvements.map(w => `<div class="text-sm text-slate-600 pl-3 py-1 bg-yellow-50 rounded">${escapeHtml(w)}</div>`).join('')}
               </div>
@@ -1916,7 +1916,7 @@
         document.getElementById('reviewResult').classList.remove('hidden');
       } catch (err) {
         document.getElementById('reviewLoading').classList.add('hidden');
-        document.getElementById('reviewError').textContent = '分析失败�? + err.message;
+        document.getElementById('reviewError').textContent = '分析失败�? + err.message;
         document.getElementById('reviewError').classList.remove('hidden');
       } finally {
         btn.disabled = false; btn.textContent = '🎙 AI 复盘分析';
@@ -1939,9 +1939,9 @@
     window.closeLetterModal = () => document.getElementById('letterModal').classList.add('hidden');
 
     window.fillLetterSample = () => {
-      document.getElementById('letterResume').value = `姓名：张�?学历：本科（985 / 计算机科学）
+      document.getElementById('letterResume').value = `姓名：张�?学历：本科（985 / 计算机科学）
 技能：JavaScript, TypeScript, React, Vue, Node.js, Python
-项目：字节跳动前端实习（首屏优化 3s�?.2s）、腾讯小程序（DAU 50万）
+项目：字节跳动前端实习（首屏优化 3s�?.2s）、腾讯小程序（DAU 50万）
 获奖：ACM 区域赛银牌`;
     };
 
@@ -1949,13 +1949,13 @@
       const resume = document.getElementById('letterResume').value.trim();
       const sel = document.getElementById('letterJobSelect');
       const jobId = sel.value;
-      if (!resume) { alert('请填写简�?); return; }
-      if (!jobId) { alert('请选择一个岗�?); return; }
+      if (!resume) { alert('请填写简�?); return; }
+      if (!jobId) { alert('请选择一个岗�?); return; }
       const job = allJobs.find(j => j.id === jobId);
       if (!job) return;
 
       const btn = document.getElementById('letterBtn');
-      btn.disabled = true; btn.textContent = '生成�?..';
+      btn.disabled = true; btn.textContent = '生成�?..';
       document.getElementById('letterResult').classList.add('hidden');
       document.getElementById('letterError').classList.add('hidden');
       document.getElementById('letterLoading').classList.remove('hidden');
@@ -1973,7 +1973,7 @@
         if (!data?.success) throw new Error(data?.error || '生成失败');
 
         const letters = data.data.letters || [];
-        const styleColors = { '专业稳重': 'bg-blue-100 text-blue-700', '热情真诚': 'bg-pink-100 text-pink-700', '简洁有�?: 'bg-slate-100 text-slate-700' };
+        const styleColors = { '专业稳重': 'bg-blue-100 text-blue-700', '热情真诚': 'bg-pink-100 text-pink-700', '简洁有�?: 'bg-slate-100 text-slate-700' };
 
         const resultEl = document.getElementById('letterResult');
         resultEl.innerHTML = letters.map((l, i) => `
@@ -1991,7 +1991,7 @@
         document.getElementById('letterResult').classList.remove('hidden');
       } catch (err) {
         document.getElementById('letterLoading').classList.add('hidden');
-        document.getElementById('letterError').textContent = '生成失败�? + err.message;
+        document.getElementById('letterError').textContent = '生成失败�? + err.message;
         document.getElementById('letterError').classList.remove('hidden');
       } finally {
         btn.disabled = false; btn.textContent = '✉️ 生成 3 封投递信';
@@ -2001,7 +2001,7 @@
     window.copyLetter = async (idx, body) => {
       try {
         await navigator.clipboard.writeText(body);
-        alert('�?邮件正文已复制到剪贴�?);
+        alert('�?邮件正文已复制到剪贴�?);
       } catch {
         // Fallback
         const ta = document.createElement('textarea');
@@ -2010,7 +2010,7 @@
         ta.select();
         document.execCommand('copy');
         document.body.removeChild(ta);
-        alert('�?已复�?);
+        alert('�?已复�?);
       }
     };
 
