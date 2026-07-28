@@ -876,14 +876,15 @@
       if (!job) return;
       document.getElementById('fbJobId').value = jobId;
       document.getElementById('fbId').value = '';
-      document.getElementById('feedbackTitle').textContent = `复盘 - ${job.company} (${job.position || '岗位'})`;
-      document.getElementById('feedbackJobInfo').innerHTML = `
-        <div class="flex items-center gap-2 flex-wrap">
-          <strong>${escapeHtml(job.company)}</strong>
-          <span class="status-${job.status} text-xs px-2 py-0.5 rounded-full">${STATUS_LABELS[job.status] || job.status}</span>
-          <span class="text-xs text-slate-500">${escapeHtml(job.position || '')}</span>
-        </div>
-      `;
+      document.getElementById('feedbackTitle').textContent = '复盘 - ' + job.company + ' (' + (job.position || '岗位') + ')';
+      const infoEl = document.getElementById('feedbackJobInfo');
+      infoEl.innerHTML = '';
+      const tag = document.createElement('div');
+      tag.className = 'flex items-center gap-2 flex-wrap';
+      tag.innerHTML = '<strong>' + escapeHtml(job.company) + '</strong>' +
+        '<span class="status-' + job.status + ' text-xs px-2 py-0.5 rounded-full">' + (STATUS_LABELS[job.status] || job.status) + '</span>' +
+        '<span class="text-xs text-slate-500">' + escapeHtml(job.position || '') + '</span>';
+      infoEl.appendChild(tag);
       document.getElementById('fbRound').value = '1';
       document.getElementById('fbDate').value = new Date().toISOString().slice(0, 10);
       document.getElementById('fbType').value = 'tech';
