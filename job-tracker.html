@@ -593,25 +593,28 @@
   </div>
 
   <!-- ============ 右下角浮动按钮（双按钮）============ -->
-  <!-- ============ 面试复盘弹窗 ============ -->
+  <!-- ============ 面试复盘弹窗（Markdown 编辑器）============ -->
   <div id="feedbackModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
-    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl p-6 fade-in max-h-[90vh] overflow-y-auto">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl p-6 fade-in max-h-[90vh] overflow-hidden flex flex-col">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-lg font-semibold flex items-center gap-2">
           <span>📝</span><span id="feedbackTitle">面试复盘</span>
         </h3>
-        <button onclick="closeFeedbackModal()" class="text-slate-400 hover:text-slate-600">✕</button>
+        <div class="flex items-center gap-2">
+          <button type="button" id="fbModeBtn" onclick="toggleFbMode()" class="text-xs px-2 py-1 border border-slate-300 rounded hover:bg-slate-50">分屏</button>
+          <button onclick="closeFeedbackModal()" class="text-slate-400 hover:text-slate-600">✕</button>
+        </div>
       </div>
 
-      <div id="feedbackJobInfo" class="text-sm bg-slate-50 rounded-lg p-3 mb-4"></div>
+      <div id="feedbackJobInfo" class="text-sm bg-slate-50 rounded-lg p-3 mb-3"></div>
 
-      <form id="feedbackForm" class="space-y-3">
+      <form id="feedbackForm" class="flex-1 flex flex-col min-h-0">
         <input type="hidden" id="fbJobId">
         <input type="hidden" id="fbId">
-        <div class="grid grid-cols-2 gap-3">
+        <div class="grid grid-cols-3 gap-2 mb-3">
           <div>
             <label class="text-xs text-slate-600">第几面</label>
-            <select id="fbRound" class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white">
+            <select id="fbRound" class="w-full mt-1 px-2 py-1.5 border border-slate-300 rounded text-sm bg-white">
               <option value="1">一面</option>
               <option value="2">二面</option>
               <option value="3">三面</option>
@@ -622,56 +625,79 @@
             </select>
           </div>
           <div>
-            <label class="text-xs text-slate-600">面试日期</label>
-            <input id="fbDate" type="date" class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm">
+            <label class="text-xs text-slate-600">日期</label>
+            <input id="fbDate" type="date" class="w-full mt-1 px-2 py-1.5 border border-slate-300 rounded text-sm">
+          </div>
+          <div>
+            <label class="text-xs text-slate-600">类型</label>
+            <select id="fbType" class="w-full mt-1 px-2 py-1.5 border border-slate-300 rounded text-sm bg-white">
+              <option value="tech">技术面</option>
+              <option value="business">业务面</option>
+              <option value="hr">HR 面</option>
+              <option value="final">终面</option>
+            </select>
           </div>
         </div>
-        <div>
-          <label class="text-xs text-slate-600">面试类型</label>
-          <select id="fbType" class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white">
-            <option value="tech">技术面</option>
-            <option value="business">业务面</option>
-            <option value="hr">HR 面</option>
-            <option value="final">终面</option>
-          </select>
-        </div>
-        <div>
-          <label class="text-xs text-slate-600">整体评分</label>
-          <div id="fbRating" class="flex gap-2 mt-1">
-            <button type="button" data-rating="1" class="rating-btn text-2xl">⭐</button>
-            <button type="button" data-rating="2" class="rating-btn text-2xl">⭐</button>
-            <button type="button" data-rating="3" class="rating-btn text-2xl">⭐</button>
-            <button type="button" data-rating="4" class="rating-btn text-2xl">⭐</button>
-            <button type="button" data-rating="5" class="rating-btn text-2xl">⭐</button>
-          </div>
-        </div>
-        <div>
-          <label class="text-xs text-slate-600">问到的题目（每行一个）</label>
-          <textarea id="fbQuestions" rows="3" placeholder="HTTP 和 HTTPS 区别？&#10;React useEffect 依赖？&#10;闭包是什么？" class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm"></textarea>
-        </div>
-        <div>
-          <label class="text-xs text-slate-600">复盘笔记</label>
-          <textarea id="fbNotes" rows="3" placeholder="答得不错的就是 3 个 HTTP 类的，算法题答得一般..." class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm"></textarea>
-        </div>
-        <div>
-          <label class="text-xs text-slate-600">下次改进点</label>
-          <textarea id="fbImprovements" rows="2" placeholder="下次准备 React Hooks 深入..." class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm"></textarea>
+
+        <!-- 工具栏 -->
+        <div class="flex flex-wrap gap-1 mb-2 pb-2 border-b border-slate-200">
+          <button type="button" onclick="fbFormat('bold')" class="px-2 py-1 text-sm font-bold hover:bg-slate-100 rounded" title="粗体 Ctrl+B"><b>B</b></button>
+          <button type="button" onclick="fbFormat('italic')" class="px-2 py-1 text-sm italic hover:bg-slate-100 rounded" title="斜体 Ctrl+I"><i>I</i></button>
+          <button type="button" onclick="fbFormat('strike')" class="px-2 py-1 text-sm line-through hover:bg-slate-100 rounded" title="删除线"><s>S</s></button>
+          <span class="border-l border-slate-200 mx-1"></span>
+          <button type="button" onclick="fbFormat('h1')" class="px-2 py-1 text-sm hover:bg-slate-100 rounded" title="一级标题">H1</button>
+          <button type="button" onclick="fbFormat('h2')" class="px-2 py-1 text-sm hover:bg-slate-100 rounded" title="二级标题">H2</button>
+          <button type="button" onclick="fbFormat('h3')" class="px-2 py-1 text-sm hover:bg-slate-100 rounded" title="三级标题">H3</button>
+          <span class="border-l border-slate-200 mx-1"></span>
+          <button type="button" onclick="fbFormat('ul')" class="px-2 py-1 text-sm hover:bg-slate-100 rounded" title="无序列表">•</button>
+          <button type="button" onclick="fbFormat('ol')" class="px-2 py-1 text-sm hover:bg-slate-100 rounded" title="有序列表">1.</button>
+          <button type="button" onclick="fbFormat('quote')" class="px-2 py-1 text-sm hover:bg-slate-100 rounded" title="引用">&gt;</button>
+          <span class="border-l border-slate-200 mx-1"></span>
+          <button type="button" onclick="fbFormat('code')" class="px-2 py-1 text-sm font-mono hover:bg-slate-100 rounded" title="代码">&lt;/&gt;</button>
+          <button type="button" onclick="fbFormat('link')" class="px-2 py-1 text-sm hover:bg-slate-100 rounded" title="链接 Ctrl+K">🔗</button>
+          <button type="button" onclick="fbFormat('hr')" class="px-2 py-1 text-sm hover:bg-slate-100 rounded" title="分割线">—</button>
+          <span class="ml-auto text-xs text-slate-400 self-center">支持 Markdown</span>
         </div>
 
-        <button type="button" onclick="generateInterviewAdvice()" id="fbAdviceBtn" class="w-full py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg text-sm hover:opacity-90">
-          🤖 AI 生成下次面试建议
-        </button>
-        <div id="fbAdvice" class="hidden bg-indigo-50 rounded-lg p-3 text-sm text-slate-700"></div>
+        <!-- 编辑/预览区域 -->
+        <div id="fbEditorArea" class="flex-1 grid grid-cols-2 gap-2 min-h-0">
+          <textarea id="fbContent" class="w-full h-full p-3 border border-slate-300 rounded-lg text-sm font-mono resize-none focus:outline-none focus:border-blue-500" placeholder="# 一面 - 字节跳动
 
-        <div class="flex gap-2 pt-2">
-          <button type="button" onclick="closeFeedbackModal()" class="flex-1 py-2 border border-slate-300 rounded-lg text-sm hover:bg-slate-50">取消</button>
-          <button type="submit" class="flex-1 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">保存</button>
+**日期**: 2026-07-28
+**岗位**: AI 产品经理
+
+## 问到的题
+1. 为什么想做 AI 产品
+2. RAG 和 Fine-tuning 的区别
+
+## 我答得怎么样
+- 自我介绍: ⭐⭐⭐⭐
+- 技术题: ⭐⭐
+
+## 复盘
+- 准备不够充分
+- 案例讲太久
+
+## 改进
+- 复习 RAG
+- 案例控制 1 分钟内"></textarea>
+          <div id="fbPreview" class="w-full h-full p-3 border border-slate-200 rounded-lg overflow-y-auto bg-slate-50 text-sm"></div>
         </div>
+
+        <div class="flex gap-2 mt-3 items-center">
+          <span class="text-xs text-slate-400 flex-1" id="fbSavedHint">✓ 自动保存到本地</span>
+          <button type="button" onclick="generateInterviewAdvice()" id="fbAdviceBtn" class="px-3 py-1.5 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded text-xs hover:opacity-90">
+            🤖 AI 给建议
+          </button>
+          <button type="button" onclick="closeFeedbackModal()" class="px-3 py-1.5 border border-slate-300 rounded text-xs hover:bg-slate-50">取消</button>
+          <button type="submit" class="px-4 py-1.5 bg-blue-600 text-white rounded text-xs hover:bg-blue-700">保存</button>
+        </div>
+        <div id="fbAdvice" class="hidden bg-indigo-50 rounded-lg p-3 text-xs text-slate-700 mt-2"></div>
       </form>
 
-      <div id="fbHistory" class="mt-6 hidden">
-        <h4 class="text-sm font-semibold text-slate-700 mb-2">历史复盘</h4>
-        <div id="fbHistoryList" class="space-y-2"></div>
+      <div id="fbHistory" class="mt-4 hidden">
+        <h4 class="text-sm font-semibold text-slate-700 mb-2">📚 历史复盘</h4>
+        <div id="fbHistoryList" class="space-y-2 max-h-40 overflow-y-auto"></div>
       </div>
     </div>
   </div>
@@ -817,6 +843,127 @@
 
     // ========== 面试复盘 ==========
     let currentFbRating = 0;
+    // ========== Markdown 引擎（极简自研，~120 行）============
+    // 支持: # ## ### 标题, **粗体**, *斜体*, ~~删除线~~, - 列表, 1. 有序列表, > 引用, `代码`, ```代码块```, [文字](url) 链接, --- 分割线
+    function renderMarkdown(text) {
+      if (!text) return '<p class="text-slate-400 text-sm">预览为空</p>';
+      // 先保护代码块
+      const codeBlocks = [];
+      text = text.replace(/```([\s\S]*?)```/g, (m, code) => {
+        codeBlocks.push(code);
+        return ` CODEBLOCK_${codeBlocks.length - 1} `;
+      });
+      // 保护行内代码
+      const inlineCodes = [];
+      text = text.replace(/`([^`\n]+)`/g, (m, code) => {
+        inlineCodes.push(code);
+        return ` INLINECODE_${inlineCodes.length - 1} `;
+      });
+      // HTML 转义
+      text = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+      // 恢复代码占位符
+      text = text.replace(/ INLINECODE_(\d+) /g, (m, i) => ` INLINECODE_${i} `);
+      text = text.replace(/ CODEBLOCK_(\d+) /g, (m, i) => ` CODEBLOCK_${i} `);
+
+      // 分割线
+      text = text.replace(/^---+$/gm, '<hr class="my-3 border-slate-200">');
+      // 标题
+      text = text.replace(/^### (.+)$/gm, '<h3 class="text-base font-semibold mt-3 mb-1 text-slate-800">$1</h3>');
+      text = text.replace(/^## (.+)$/gm, '<h2 class="text-lg font-semibold mt-3 mb-1 text-slate-800">$1</h2>');
+      text = text.replace(/^# (.+)$/gm, '<h1 class="text-xl font-bold mt-4 mb-2 text-slate-900">$1</h1>');
+      // 引用
+      text = text.replace(/^&gt; (.+)$/gm, '<blockquote class="border-l-4 border-slate-300 pl-3 py-1 my-1 text-slate-600 italic">$1</blockquote>');
+      // 有序列表
+      text = text.replace(/^(\d+)\. (.+)$/gm, '<li class="ml-4 list-decimal">$2</li>');
+      // 无序列表
+      text = text.replace(/^- (.+)$/gm, '<li class="ml-4 list-disc">$1</li>');
+      // 粗体
+      text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+      // 斜体
+      text = text.replace(/(?<!\*)\*([^*\n]+)\*(?!\*)/g, '<em>$1</em>');
+      // 删除线
+      text = text.replace(/~~([^~]+)~~/g, '<del>$1</del>');
+      // 链接 [文字](url)
+      text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" class="text-blue-600 hover:underline">$1</a>');
+      // 恢复代码块
+      text = text.replace(/ CODEBLOCK_(\d+) /g, (m, i) => `<pre class="bg-slate-900 text-slate-100 p-2 rounded text-xs my-2 overflow-x-auto"><code>${escapeHtml(codeBlocks[parseInt(i)])}</code></pre>`);
+      text = text.replace(/ INLINECODE_(\d+) /g, (m, i) => `<code class="bg-slate-100 text-slate-800 px-1 py-0.5 rounded text-xs font-mono">${escapeHtml(inlineCodes[parseInt(i)])}</code>`);
+      // 段落（双换行）
+      text = text.split(/\n\n+/).map(p => {
+        if (p.match(/^<(h\d|ul|ol|li|hr|blockquote|pre)/)) return p;
+        return `<p class="my-1.5 leading-relaxed">${p.replace(/\n/g, '<br>')}</p>`;
+      }).join('');
+      return text;
+    }
+
+    // 工具栏格式化
+    function fbFormat(type) {
+      const ta = document.getElementById('fbContent');
+      if (!ta) return;
+      const start = ta.selectionStart, end = ta.selectionEnd;
+      const text = ta.value;
+      const before = text.substring(0, start), sel = text.substring(start, end), after = text.substring(end);
+      const map = {
+        bold: `**${sel || '粗体文字'}**`,
+        italic: `*${sel || '斜体文字'}*`,
+        strike: `~~${sel || '删除线'}~~`,
+        h1: `# ${sel || '一级标题'}`,
+        h2: `## ${sel || '二级标题'}`,
+        h3: `### ${sel || '三级标题'}`,
+        ul: `- ${sel || '列表项'}`,
+        ol: `1. ${sel || '有序项'}`,
+        quote: `> ${sel || '引用内容'}`,
+        code: `\`${sel || '代码'}\``,
+        link: `[${sel || '链接文字'}](https://)`,
+        hr: `\n---\n`
+      };
+      const inserted = map[type] || '';
+      ta.value = before + inserted + after;
+      ta.focus();
+      const newPos = before.length + inserted.length;
+      ta.setSelectionRange(newPos, newPos);
+      updateFbPreview();
+      fbAutoSave();
+    }
+
+    // 自动保存 + 实时预览
+    let fbCurrentContent = '';
+    let fbSaveTimer = null;
+    function fbAutoSave() {
+      clearTimeout(fbSaveTimer);
+      fbSaveTimer = setTimeout(() => {
+        const jobId = document.getElementById('fbJobId').value;
+        if (jobId) {
+          localStorage.setItem('fb_draft_' + jobId, fbCurrentContent);
+          const hint = document.getElementById('fbSavedHint');
+          if (hint) { hint.textContent = '✓ 已自动保存到本地'; setTimeout(() => hint.textContent = '✓ 自动保存到本地', 1500); }
+        }
+      }, 500);
+    }
+    function updateFbPreview() {
+      const ta = document.getElementById('fbContent');
+      const prev = document.getElementById('fbPreview');
+      if (!ta || !prev) return;
+      fbCurrentContent = ta.value;
+      prev.innerHTML = renderMarkdown(ta.value);
+    }
+    function fbKeydown(e) {
+      if (e.ctrlKey || e.metaKey) {
+        if (e.key === 'b') { e.preventDefault(); fbFormat('bold'); }
+        else if (e.key === 'i') { e.preventDefault(); fbFormat('italic'); }
+        else if (e.key === 'k') { e.preventDefault(); fbFormat('link'); }
+      }
+    }
+    function initFbContent() {
+      const ta = document.getElementById('fbContent');
+      if (ta) {
+        ta.value = fbCurrentContent || '';
+        ta.addEventListener('input', () => { updateFbPreview(); fbAutoSave(); });
+        ta.addEventListener('keydown', fbKeydown);
+      }
+    }
+
+    // ========== 打开复盘弹窗 ==========
     window.openFeedbackModal = async (jobId) => {
       if (!currentUser) { openAuth(); return; }
       const job = allJobs.find(j => j.id === jobId);
@@ -834,105 +981,106 @@
       document.getElementById('fbRound').value = '1';
       document.getElementById('fbDate').value = new Date().toISOString().slice(0, 10);
       document.getElementById('fbType').value = 'tech';
-      document.getElementById('fbQuestions').value = '';
-      document.getElementById('fbNotes').value = '';
-      document.getElementById('fbImprovements').value = '';
+
+      // 加载历史复盘，找最近一次的内容预填
+      const { data: history } = await sb.from('interview_feedbacks')
+        .select('*').eq('job_id', jobId).order('created_at', { ascending: false }).limit(1);
+      if (history && history[0]) {
+        const last = history[0];
+        document.getElementById('fbRound').value = Math.min(parseInt(last.round) + 1, 7);
+        fbCurrentContent = last.notes || '';
+      } else {
+        const draft = localStorage.getItem('fb_draft_' + jobId);
+        fbCurrentContent = draft || '';
+      }
+
+      // 初始化 textarea（如果切过模式）
+      if (!document.getElementById('fbContent')) {
+        const area = document.getElementById('fbEditorArea');
+        area.className = 'flex-1 grid grid-cols-2 gap-2 min-h-0';
+        area.innerHTML = `
+          <textarea id="fbContent" class="w-full h-full p-3 border border-slate-300 rounded-lg text-sm font-mono resize-none focus:outline-none focus:border-blue-500"></textarea>
+          <div id="fbPreview" class="w-full h-full p-3 border border-slate-200 rounded-lg overflow-y-auto bg-slate-50 text-sm"></div>
+        `;
+      }
+      initFbContent();
+      updateFbPreview();
       document.getElementById('fbAdvice').classList.add('hidden');
-      currentFbRating = 0;
-      updateRatingButtons();
       document.getElementById('feedbackModal').classList.remove('hidden');
       await loadFeedbackHistory(jobId);
     };
-    window.closeFeedbackModal = () => document.getElementById('feedbackModal').classList.add('hidden');
 
-    function updateRatingButtons() {
-      document.querySelectorAll('.rating-btn').forEach(btn => {
-        const r = parseInt(btn.dataset.rating);
-        btn.style.opacity = r <= currentFbRating ? '1' : '0.3';
-      });
-    }
-    document.addEventListener('click', (e) => {
-      if (e.target.classList && e.target.classList.contains('rating-btn')) {
-        currentFbRating = parseInt(e.target.dataset.rating);
-        updateRatingButtons();
-      }
-    });
+    window.closeFeedbackModal = () => {
+      document.getElementById('feedbackModal').classList.add('hidden');
+    };
 
     async function loadFeedbackHistory(jobId) {
-      const { data } = await sb
-        .from('interview_feedbacks')
-        .select('*')
-        .eq('job_id', jobId)
-        .order('created_at', { ascending: false });
+      const { data } = await sb.from('interview_feedbacks')
+        .select('*').eq('job_id', jobId).order('created_at', { ascending: false });
       const hist = document.getElementById('fbHistory');
       const list = document.getElementById('fbHistoryList');
       if (!data || !data.length) { hist.classList.add('hidden'); return; }
       hist.classList.remove('hidden');
       const typeLabel = { tech: '技术面', business: '业务面', hr: 'HR 面', final: '终面' };
-      list.innerHTML = data.map(f => `
-        <div class="border border-slate-200 rounded-lg p-3 text-xs">
-          <div class="flex items-center justify-between mb-1">
+      list.innerHTML = data.map(f => {
+        const content = (f.notes || '').replace(/`/g, '\\`').replace(/\\/g, '\\\\').replace(/\n/g, '\\n');
+        const preview = (f.notes || '').replace(/[#*`>]/g, '').slice(0, 80);
+        return `
+        <div class="border border-slate-200 rounded-lg p-2 text-xs cursor-pointer hover:bg-slate-50" onclick="document.getElementById('fbContent').value=\`${content}\`;updateFbPreview();">
+          <div class="flex items-center justify-between">
             <span class="font-medium">第 ${f.round} 面 · ${typeLabel[f.interview_type] || f.interview_type} · ${f.interview_date || ''}</span>
-            <span class="text-yellow-500">${'⭐'.repeat(f.overall_rating || 0)}</span>
+            <span class="text-slate-400">${new Date(f.created_at).toLocaleString('zh-CN')}</span>
           </div>
-          ${f.questions ? `<div class="text-slate-500 mt-1">题目: ${escapeHtml(f.questions).replace(/\n/g, '<br>')}</div>` : ''}
-          ${f.notes ? `<div class="text-slate-600 mt-1">${escapeHtml(f.notes).replace(/\n/g, '<br>')}</div>` : ''}
-          ${f.improvements ? `<div class="text-blue-600 mt-1">改进: ${escapeHtml(f.improvements).replace(/\n/g, '<br>')}</div>` : ''}
-          <div class="text-slate-400 text-right mt-1">${new Date(f.created_at).toLocaleString('zh-CN')}</div>
+          <div class="text-slate-500 mt-1 line-clamp-2">${escapeHtml(preview)}</div>
         </div>
-      `).join('');
+      `;
+      }).join('');
     }
 
     document.getElementById('feedbackForm').addEventListener('submit', async (e) => {
       e.preventDefault();
+      const content = document.getElementById('fbContent').value.trim();
+      if (!content) { alert('请输入复盘内容'); return; }
       const fb = {
         user_id: currentUser.id,
         job_id: document.getElementById('fbJobId').value,
         round: parseInt(document.getElementById('fbRound').value),
         interview_date: document.getElementById('fbDate').value || null,
         interview_type: document.getElementById('fbType').value,
-        questions: document.getElementById('fbQuestions').value.trim() || null,
-        overall_rating: currentFbRating || null,
-        notes: document.getElementById('fbNotes').value.trim() || null,
-        improvements: document.getElementById('fbImprovements').value.trim() || null,
+        notes: content,
       };
       const { error } = await sb.from('interview_feedbacks').insert(fb);
       if (error) { alert('保存失败：' + error.message); return; }
-      // 自动推进 job 状态
       const jobId = fb.job_id;
       const statusMap = { 1: 'interview_1', 2: 'interview_2', 3: 'interview_3', 4: 'interview_4', 5: 'interview_5', 6: 'hr_interview', 7: 'final_interview' };
       const newStatus = statusMap[fb.round];
       if (newStatus) {
         await sb.from('jobs').update({ status: newStatus, interview_round: fb.round }).eq('id', jobId);
       }
+      localStorage.removeItem('fb_draft_' + jobId);
       await loadJobs();
       await loadFeedbackHistory(jobId);
       alert('✅ 复盘已保存，状态已自动推进到 ' + (STATUS_LABELS[newStatus] || newStatus));
     });
 
-    // AI 生成面试建议（基于历史复盘）
     window.generateInterviewAdvice = async () => {
       const jobId = document.getElementById('fbJobId').value;
-      const notes = document.getElementById('fbNotes').value.trim();
-      const improvements = document.getElementById('fbImprovements').value.trim();
-      if (!notes && !improvements) { alert('请先写一些复盘内容'); return; }
+      const content = document.getElementById('fbContent').value.trim();
+      if (!content) { alert('请先写一些复盘内容'); return; }
       const btn = document.getElementById('fbAdviceBtn');
       btn.disabled = true; btn.textContent = '🤖 AI 分析中...';
       try {
-        // 查这个用户的所有历史复盘
-        const { data: history } = await sb
-          .from('interview_feedbacks')
-          .select('round, interview_type, questions, overall_rating, notes, improvements, jobs(company, position)')
-          .order('created_at', { ascending: false })
-          .limit(5);
+        const { data: history } = await sb.from('interview_feedbacks')
+          .select('round, interview_type, notes, jobs(company, position)')
+          .order('created_at', { ascending: false }).limit(5);
         const historyText = (history || []).map(h => {
           const job = h.jobs || {};
-          return `[${job.company || ''} ${job.position || ''} 第${h.round}面 ${h.interview_type}] 评分${h.overall_rating}/5 题目:${h.questions || ''} 复盘:${h.notes || ''} 改进:${h.improvements || ''}`;
+          return `[${job.company || ''} ${job.position || ''} 第${h.round}面 ${h.interview_type}] ${h.notes || ''}`;
         }).join('\n');
         const { data, error } = await sb.functions.invoke('match-score', {
           body: {
-            resume: `最近的复盘笔记：\n${notes}\n\n改进点：\n${improvements}\n\n历史面试复盘：\n${historyText}`,
-            jd: '请分析这些秋招面试复盘，给出下次面试的具体准备建议（重点：公司类型、技术领域、常见薄弱点、推荐学习资源）'
+            resume: `最近的复盘笔记：\n${content}\n\n历史复盘：\n${historyText}`,
+            jd: '分析这些秋招面试复盘，给出下次面试的具体准备建议（重点：公司类型、技术领域、薄弱点、推荐学习资源）'
           }
         });
         if (error) throw error;
@@ -948,7 +1096,7 @@
       } catch (err) {
         alert('AI 分析失败：' + err.message);
       } finally {
-        btn.disabled = false; btn.textContent = '🤖 AI 生成下次面试建议';
+        btn.disabled = false; btn.textContent = '🤖 AI 给建议';
       }
     };
 
