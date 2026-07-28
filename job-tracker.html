@@ -1075,7 +1075,8 @@
       const statusMap = { 1: 'interview_1', 2: 'interview_2', 3: 'interview_3', 4: 'interview_4', 5: 'interview_5', 6: 'hr_interview', 7: 'final_interview' };
       const newStatus = statusMap[fb.round];
       if (newStatus) {
-        await sb.from('jobs').update({ status: newStatus, interview_round: fb.round }).eq('id', jobId);
+        const { error: updateErr } = await sb.from('jobs').update({ status: newStatus, interview_round: fb.round }).eq('id', jobId);
+        if (updateErr) { alert('⚠️ 复盘已保存，但状态同步失败：' + updateErr.message); }
       }
       localStorage.removeItem('fb_draft_' + jobId);
       await loadJobs();
