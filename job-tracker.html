@@ -987,7 +987,8 @@
         .select('*').eq('job_id', jobId).order('created_at', { ascending: false }).limit(1);
       if (history && history[0]) {
         const last = history[0];
-        document.getElementById('fbRound').value = Math.min(parseInt(last.round) + 1, 7);
+        // 默认显示最近一次的面数（用户自己改）
+        document.getElementById('fbRound').value = Math.min(parseInt(last.round), 7);
         fbCurrentContent = last.notes || '';
       } else {
         const draft = localStorage.getItem('fb_draft_' + jobId);
@@ -1026,16 +1027,35 @@
         const content = (f.notes || '').replace(/`/g, '\\`').replace(/\\/g, '\\\\').replace(/\n/g, '\\n');
         const preview = (f.notes || '').replace(/[#*`>]/g, '').slice(0, 80);
         return `
-        <div class="border border-slate-200 rounded-lg p-2 text-xs cursor-pointer hover:bg-slate-50" onclick="document.getElementById('fbContent').value=\`${content}\`;updateFbPreview();">
-          <div class="flex items-center justify-between">
+        <div class="border border-slate-200 rounded-lg p-2 text-xs">
+          <div class="flex items-center justify-between cursor-pointer hover:bg-slate-50 -m-2 p-2" onclick="document.getElementById('fbContent').value=\`${content}\`;updateFbPreview();">
             <span class="font-medium">第 ${f.round} 面 · ${typeLabel[f.interview_type] || f.interview_type} · ${f.interview_date || ''}</span>
             <span class="text-slate-400">${new Date(f.created_at).toLocaleString('zh-CN')}</span>
           </div>
-          <div class="text-slate-500 mt-1 line-clamp-2">${escapeHtml(preview)}</div>
+          <div class="text-slate-500 mt-1 line-clamp-2 cursor-pointer pl-1" onclick="document.getElementById('fbContent').value=\`${content}\`;updateFbPreview();">${escapeHtml(preview)}</div>
+          <div class="flex justify-end gap-2 mt-1">
+            <button onclick="loadFeedbackIntoEditor(\`${content}\`)" class="text-xs text-blue-600 hover:underline">📝 编辑</button>
+            <button onclick="deleteFeedback('${f.id}', '${jobId}')" class="text-xs text-red-600 hover:underline">🗑 删除</button>
+          </div>
         </div>
       `;
       }).join('');
     }
+
+    // 把历史复盘加载到编辑器
+    window.loadFeedbackIntoEditor = (content) => {
+      document.getElementById('fbContent').value = content;
+      updateFbPreview();
+    };
+
+    // 删除复盘
+    window.deleteFeedback = async (fbId, jobId) => {
+      if (!confirm('确定要删除这条复盘吗？')) return;
+      const { error } = await sb.from('interview_feedbacks').delete().eq('id', fbId);
+      if (error) { alert('删除失败：' + error.message); return; }
+      await loadFeedbackHistory(jobId);
+      alert('✅ 已删除');
+    };
 
     document.getElementById('feedbackForm').addEventListener('submit', async (e) => {
       e.preventDefault();
