@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>清理重复 · Job Tracker</title>
+  <script src="chart.min.js"></script>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+    .modal-backdrop { background: rgba(0,0,0,0.5); backdrop-filter: blur(2px); }
+    .fade-in { animation: fadeIn .2s ease-out; }
+    @keyframes fadeIn { from {opacity:0; transform:scale(.95);} to {opacity:1; transform:scale(1);} }
+  </style>
+</head>
+<body class="bg-slate-50 min-h-screen">
+  <nav class="bg-white border-b border-slate-200 sticky top-0 z-10">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+      <h1 class="text-lg font-semibold text-slate-800">🧹 清理重复记录</h1>
+      <a href="job-tracker.html" class="text-sm text-blue-600 hover:underline">← 返回主页面</a>
+    </div>
+  </nav>
+
+  <main class="max-w-5xl mx-auto px-4 py-6">
+    <!-- 加载状态 -->
+    <div id="loadingState" class="bg-white rounded-xl p-8 text-center">
+      <div class="text-2xl mb-2">🔍</div>
+      <div class="text-slate-700">正在加载数据并检测重复...</div>
+    </div>
+
+    <!-- 操作区 -->
+    <div id="mainContent" class="hidden">
+      <!-- 概览 -->
+      <div class="bg-white rounded-xl p-4 mb-4">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-sm font-semibold text-slate-700">📊 检测概览</h2>
+          <div class="text-xs text-slate-500" id="scanInfo"></div>
+        </div>
+        <div class="grid grid-cols-3 gap-3">
+          <div class="bg-blue-50 rounded-lg p-3">
+            <div class="text-xs text-blue-600">总记录数</div>
+            <div class="text-2xl font-bold text-blue-700" id="totalCount">0</div>
+          </div>
+          <div class="bg-yellow-50 rounded-lg p-3">
+            <div class="text-xs text-yellow-600">独立公司数</div>
+            <div class="text-2xl font-bold text-yellow-700" id="uniqueCount">0</div>
+          </div>
+          <div class="bg-red-50 rounded-lg p-3">
+            <div class="text-xs text-red-600">疑似重复组数</div>
+            <div class="text-2xl font-bold text-red-700" id="dupGroupCount">0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 操作按钮 -->
+      <div class="flex gap-2 mb-4">
+        <button id="batchMergeBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">
+          ⚡ 一键合并所有重复（按公司名合并字段）
+        </button>
+        <button id="manualBtn" class="px-4 py-2 border border-slate-300 rounded-lg text-sm hover:bg-slate-50">
+          🎯 逐组手动选择
+        </button>
+      </div>
+
+      <!-- 重复组列表 -->
+      <div id="dupGroups" class="space-y-3"></div>
+    </div>
+
+    <!-- 日志 -->
+    <div id="log" class="mt-4 hidden bg-slate-900 text-green-400 text-xs font-mono rounded-xl p-3 max-h-60 overflow-y-auto"></div>
+  </main>
+
+  <script>
+    (function() {
+    const SUPABASE_URL = 'https://ahvebaixpxkkaokoniix.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFodmViYWl4cHhra2Fva29uaWl4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ4NzM4NDMsImV4cCI6MjEwMDQ0OTg0M30.Ih6uOU6mp9cniZl9vgpKgo0C7JTut3ruu5BZnRcmUvg';
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let currentUser = null;
+    let allJobs = [];
+    let dupGroups = []; // [{ key: '字节跳动-类', names: ['字节跳动', 'ByteDance'], records: [...] }]
+
+    async function init() {
+      const { data: { session } } = await sb.auth.getSession();
+      currentUser = session?.user ?? null;
+      if (!currentUser) {
+        document.getElementById('loadingState').innerHTML =
+          '<div class="text-slate-600">⚠️ 请先到主页面登录</div>';
+        return;
+      }
+      await scan();
+    }
+
+    async function scan() {
+      log('📥 加载所有记录...', 'info');
+      const { data, error } = await sb.from('jobs').select('*').order('created_at', { ascending: false });
+      if (error) { log('❌ 加载失败: ' + error.message, 'error'); return; }
+      allJobs = data || [];
+      log(`✅ 共加载 ${allJobs.length} 条记录`, 'success');
+
+      // 统计独立公司
+      const companyMap = {};
+      allJobs.forEach(j => {
+        if (!companyMap[j.company]) companyMap[j.company] = [];
+        companyMap[j.company].push(j);
+      });
+      const uniqueCompanies = Object.keys(companyMap);
+      log(`📊 共 ${uniqueCompanies.length} 个独立公司名`, 'info');
+
+      // 找同名重复（同一公司名有多条记录）
+      const sameNameGroups = [];
+      uniqueCompanies.forEach(name => {
+        if (companyMap[name].length > 1) {
+          sameNameGroups.push({
+            key: name,
+            names: [name],
+            records: companyMap[name],
+          });
+        }
+      });
+      log(`🔍 同名重复组：${sameNameGroups.length} 组`, 'info');
+
+      // 找疑似不同名重复（调用 AI）
+      const suspectGroups = await findSuspectDuplicates(uniqueCompanies, companyMap);
+      log(`🔍 疑似不同名重复组：${suspectGroups.length} 组`, 'info');
+
+      // 合并两组
+      dupGroups = [...sameNameGroups, ...suspectGroups];
+      render();
+    }
+
+    async function findSuspectDuplicates(uniqueCompanies, companyMap) {
+      // 只对"独立名 ≤ 1 条"的检查（避免重复处理已有同名组）
+      const singleCompanies = uniqueCompanies.filter(n => companyMap[n].length === 1);
+      if (singleCompanies.length < 2) return [];
+
+      // 调 AI 批量比对：每个名字 vs 所有其他名字
+      log(`🤖 调 AI 比对 ${singleCompanies.length} 个独立公司名...`, 'info');
+      const suspectSet = new Set(); // 用于去重
+
+      // 分批处理（避免一次太多）
+      const batchSize = 10;
+      const groups = [];
+      const matchedNames = new Set();
+
+      for (let i = 0; i < singleCompanies.length; i += batchSize) {
+        const batch = singleCompanies.slice(i, i + batchSize);
+        log(`  比对第 ${i + 1}-${Math.min(i + batchSize, singleCompanies.length)} 个...`, 'info');
+
+        try {
+          const { data } = await sb.functions.invoke('dedup-company', {
+            body: {
+              newCompany: 'BATCH_CHECK',
+              existingCompanies: singleCompanies,
+              batchCheck: batch, // 让 AI 检查这批内是否有重复
+            },
+          });
+
+          if (data?.success && data.data?.groups) {
+            data.data.groups.forEach(group => {
+              // group = ['字节跳动', 'ByteDance']
+              const allUnique = group.every(n => !matchedNames.has(n));
+              if (allUnique && group.length > 1) {
+                groups.push({
+                  key: group.sort().join('|'),
+                  names: group,
+                  records: group.flatMap(n => companyMap[n] || []),
+                });
+                group.forEach(n => matchedNames.add(n));
+              }
+            });
+          }
+        } catch (err) {
+          log('  ⚠️ 批次失败: ' + err.message, 'warn');
+        }
+      }
+
+      return groups;
+    }
+
+    function render() {
+      document.getElementById('loadingState').classList.add('hidden');
+      document.getElementById('mainContent').classList.remove('hidden');
+
+      // 概览
+      const companySet = new Set(allJobs.map(j => j.company));
+      document.getElementById('totalCount').textContent = allJobs.length;
+      document.getElementById('uniqueCount').textContent = companySet.size;
+      document.getElementById('dupGroupCount').textContent = dupGroups.length;
+      document.getElementById('scanInfo').textContent = `扫描时间：${new Date().toLocaleString('zh-CN')}`;
+
+      // 重复组列表
+      const listEl = document.getElementById('dupGroups');
+      if (!dupGroups.length) {
+        listEl.innerHTML = '<div class="bg-white rounded-xl p-8 text-center text-slate-400">🎉 没有发现重复记录！</div>';
+        return;
+      }
+      listEl.innerHTML = dupGroups.map((g, i) => `
+        <div class="bg-white rounded-xl border ${g.names.length > 1 ? 'border-red-200' : 'border-yellow-200'} p-4">
+          <div class="flex items-center justify-between mb-3">
+            <div class="font-medium text-slate-800">
+              ${g.names.length > 1 ? '🔴 疑似重复组 #' + (i + 1) : '🟡 同名重复 #' + (i + 1)}
+              <span class="text-xs text-slate-500 ml-2">(${g.records.length} 条记录)</span>
+            </div>
+            <button onclick="mergeGroup(${i})" class="px-3 py-1.5 bg-blue-600 text-white rounded text-sm hover:bg-blue-700">
+              🔀 智能合并
+            </button>
+          </div>
+          <div class="flex flex-wrap gap-2 mb-3">
+            ${g.names.map(n => `<span class="text-sm px-2 py-1 bg-blue-50 text-blue-700 rounded">${escapeHtml(n)}</span>`).join(' / ')}
+          </div>
+          <div class="grid gap-2 max-h-48 overflow-y-auto">
+            ${g.records.map(r => `
+              <div class="text-xs text-slate-600 bg-slate-50 rounded p-2">
+                <span class="font-medium">${escapeHtml(r.position || '无岗位')}</span>
+                · ${escapeHtml(r.status || '无状态')}
+                ${r.deadline ? `· 📅 ${r.deadline}` : ''}
+                ${r.update_date ? `· 更新 ${r.update_date}` : ''}
+                ${r.salary ? `· 💰 ${escapeHtml(r.salary)}` : ''}
+                ${r.industry ? `· 🏷 ${escapeHtml(r.industry)}` : ''}
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    window.mergeGroup = async (idx) => {
+      const group = dupGroups[idx];
+      const confirmMsg = `确认合并 ${group.records.length} 条记录到「${group.names[0]}」吗？\n\n合并策略：\n- 公司名：统一为「${group.names[0]}」\n- 字段空白时自动补全\n- 重复字段保留第一个有值的`;
+      if (!confirm(confirmMsg)) return;
+
+      log(`🔀 开始合并组 #${idx + 1}: ${group.names.join(' / ')}`, 'info');
+
+      // 找出第一条（保留主记录），其余合并到它
+      const sorted = group.records.sort((a, b) => (a.created_at || '').localeCompare(b.created_at || ''));
+      const main = sorted[0];
+      const others = sorted.slice(1);
+
+      const updates = { company: group.names[0] };
+      const fillFields = ['deadline', 'salary', 'location', 'enterprise_type', 'industry', 'link', 'update_date'];
+      for (const f of fillFields) {
+        if (!main[f]) {
+          // 从其他记录找第一个有值的
+          const source = others.find(r => r[f]);
+          if (source) updates[f] = source[f];
+        }
+      }
+
+      // 合并 notes
+      const notesLines = [];
+      if (main.notes) notesLines.push(main.notes);
+      others.forEach(o => {
+        if (o.notes) notesLines.push(o.notes);
+        notesLines.push(`[合并自原记录 ${o.id.slice(0, 8)}] ${o.position}（${STATUS_LABELS[o.status] || o.status}）`);
+      });
+      updates.notes = notesLines.join('\n');
+
+      log(`  更新主记录 ${main.id.slice(0, 8)}:`, 'info');
+      Object.keys(updates).forEach(k => log(`    ${k}: ${updates[k]?.slice?.(0, 50) || updates[k]}`, 'info'));
+
+      const { error: updateErr } = await sb.from('jobs').update(updates).eq('id', main.id);
+      if (updateErr) { log('❌ 更新失败: ' + updateErr.message, 'error'); return; }
+      log('  ✅ 主记录已更新', 'success');
+
+      // 删除其他重复
+      const idsToDelete = others.map(o => o.id);
+      const { error: deleteErr } = await sb.from('jobs').delete().in('id', idsToDelete);
+      if (deleteErr) { log('❌ 删除失败: ' + deleteErr.message, 'error'); return; }
+      log(`  ✅ 已删除 ${idsToDelete.length} 条重复记录`, 'success');
+
+      alert(`✅ 合并完成！\n保留 1 条，删除 ${idsToDelete.length} 条`);
+      location.reload(); // 刷新页面
+    };
+
+    document.getElementById('batchMergeBtn').addEventListener('click', () => {
+      if (!dupGroups.length) { alert('没有重复需要合并'); return; }
+      const total = dupGroups.reduce((sum, g) => sum + g.records.length - 1, 0);
+      if (!confirm(`将一键合并 ${dupGroups.length} 个组，预计删除 ${total} 条重复记录。\n\n确定？`)) return;
+      // 串行执行
+      (async () => {
+        for (let i = 0; i < dupGroups.length; i++) {
+          await window.mergeGroup(i);
+          await new Promise(r => setTimeout(r, 500));
+        }
+        alert('🎉 全部合并完成！');
+      })();
+    });
+
+    document.getElementById('manualBtn').addEventListener('click', () => {
+      // 已经在列表显示了，直接滚动到第一组
+      document.getElementById('dupGroups').scrollIntoView({ behavior: 'smooth' });
+    });
+
+    function escapeHtml(s) {
+      return String(s || '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+    }
+
+    const STATUS_LABELS = {
+      wishlist: '想投', applied: '已投递', screen: '笔试/筛选',
+      interview: '面试中', offer: 'Offer', rejected: '已拒绝'
+    };
+
+    function log(msg, type = 'info') {
+      const logEl = document.getElementById('log');
+      logEl.classList.remove('hidden');
+      const colorMap = { info: 'text-slate-300', success: 'text-green-400', warn: 'text-yellow-400', error: 'text-red-400' };
+      const line = document.createElement('div');
+      line.className = colorMap[type] || 'text-slate-300';
+      line.textContent = `[${new Date().toLocaleTimeString('zh-CN')}] ${msg}`;
+      logEl.appendChild(line);
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    init();
+    })();
+  </script>
+</body>
+</html>
