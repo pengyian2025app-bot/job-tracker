@@ -140,6 +140,7 @@
         <option value="company">按公司名</option>
         <option value="update_date">按更新日期</option>
       </select>
+      <button onclick="openOfferCompareModal()" class="px-3 py-2 border border-yellow-400 rounded-lg text-sm bg-yellow-50 text-yellow-700 hover:bg-yellow-100">💰 Offer 对比</button>
       <button onclick="exportExcel()" class="ml-auto px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white hover:bg-slate-50">📥 导出 Excel</button>
     </div>
 
@@ -590,7 +591,80 @@
     </div>
   </div>
 
-  <!-- ============ 右下角浮动按钮（双按钮）============ -->
+  <!-- ============ Offer 录入弹窗 ============ -->
+  <div id="offerModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 fade-in max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold flex items-center gap-2">💰 录入 Offer</h3>
+        <button onclick="closeOfferModal()" class="text-slate-400 hover:text-slate-600">✕</button>
+      </div>
+      <div id="offerJobInfo" class="text-sm bg-slate-50 rounded-lg p-3 mb-3"></div>
+      <form id="offerForm" class="space-y-3">
+        <input type="hidden" id="ofJobId">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="text-xs text-slate-600">月薪 (k)</label>
+            <input id="ofBase" type="number" min="0" placeholder="25" class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm">
+          </div>
+          <div>
+            <label class="text-xs text-slate-600">几薪</label>
+            <select id="ofMonths" class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white">
+              <option value="12">12 薪</option>
+              <option value="13">13 薪</option>
+              <option value="14">14 薪</option>
+              <option value="15">15 薪</option>
+              <option value="16" selected>16 薪</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="text-xs text-slate-600">年终奖（月）</label>
+            <input id="ofBonus" type="number" min="0" placeholder="3" class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm">
+          </div>
+          <div>
+            <label class="text-xs text-slate-600">股票/期权 (k)</label>
+            <input id="ofStock" type="number" min="0" placeholder="0" class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm">
+          </div>
+        </div>
+        <div>
+          <label class="text-xs text-slate-600">其他福利</label>
+          <textarea id="ofBenefits" rows="2" placeholder="餐补、房补、户口、签字费..." class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm"></textarea>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="text-xs text-slate-600">Offer 截止</label>
+            <input id="ofDeadline" type="date" class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm">
+          </div>
+          <div>
+            <label class="text-xs text-slate-600">状态</label>
+            <select id="ofStatus" class="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white">
+              <option value="pending" selected>待决定</option>
+              <option value="accepted">已接受</option>
+              <option value="declined">已拒绝</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex gap-2 pt-2">
+          <button type="button" onclick="closeOfferModal()" class="flex-1 py-2 border border-slate-300 rounded-lg text-sm hover:bg-slate-50">取消</button>
+          <button type="submit" class="flex-1 py-2 bg-yellow-600 text-white rounded-lg text-sm hover:bg-yellow-700">保存 Offer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============ Offer 对比弹窗 ============ -->
+  <div id="offerCompareModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-5xl p-6 fade-in max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-semibold flex items-center gap-2">💰 Offer 对比</h3>
+        <button onclick="closeOfferCompareModal()" class="text-slate-400 hover:text-slate-600">✕</button>
+      </div>
+      <div id="offerCompareContent"></div>
+    </div>
+  </div>
+
+
   <!-- ============ 面试复盘弹窗（Markdown 编辑器）============ -->
   <div id="feedbackModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl p-6 fade-in max-h-[90vh] overflow-hidden flex flex-col">
@@ -856,6 +930,132 @@
     };
 
     // ========== 打开复盘弹窗 ==========
+    // ========== Offer 模块 ==========
+    let currentOffers = [];
+    window.openOfferModal = async (jobId) => {
+      if (!currentUser) { openAuth(); return; }
+      const job = allJobs.find(j => j.id === jobId);
+      if (!job) return;
+      document.getElementById('ofJobId').value = jobId;
+      document.getElementById('offerJobInfo').innerHTML =
+        '<div class="flex items-center gap-2 flex-wrap"><strong>' + escapeHtml(job.company) + '</strong>' +
+        '<span class="status-' + job.status + ' text-xs px-2 py-0.5 rounded-full">' + (STATUS_LABELS[job.status] || job.status) + '</span>' +
+        '<span class="text-xs text-slate-500">' + escapeHtml(job.position || '') + '</span></div>';
+      // 加载已有 offer
+      const { data } = await sb.from('offers').select('*').eq('job_id', jobId).maybeSingle();
+      if (data) {
+        document.getElementById('ofBase').value = data.base_salary || '';
+        document.getElementById('ofMonths').value = data.salary_months || 12;
+        document.getElementById('ofBonus').value = data.bonus_months || '';
+        document.getElementById('ofStock').value = data.stock_value || '';
+        document.getElementById('ofBenefits').value = data.other_benefits || '';
+        document.getElementById('ofDeadline').value = data.deadline || '';
+        document.getElementById('ofStatus').value = data.status || 'pending';
+      } else {
+        ['ofBase','ofBonus','ofStock','ofBenefits','ofDeadline'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('ofMonths').value = 12;
+        document.getElementById('ofStatus').value = 'pending';
+      }
+      document.getElementById('offerModal').classList.remove('hidden');
+    };
+    window.closeOfferModal = () => document.getElementById('offerModal').classList.add('hidden');
+
+    document.getElementById('offerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const payload = {
+        user_id: currentUser.id,
+        job_id: document.getElementById('ofJobId').value,
+        company: (allJobs.find(j => j.id === document.getElementById('ofJobId').value) || {}).company || '',
+        position: (allJobs.find(j => j.id === document.getElementById('ofJobId').value) || {}).position || '',
+        base_salary: parseFloat(document.getElementById('ofBase').value) || null,
+        salary_months: parseInt(document.getElementById('ofMonths').value) || 12,
+        bonus_months: parseFloat(document.getElementById('ofBonus').value) || 0,
+        stock_value: parseFloat(document.getElementById('ofStock').value) || null,
+        other_benefits: document.getElementById('ofBenefits').value.trim() || null,
+        deadline: document.getElementById('ofDeadline').value || null,
+        status: document.getElementById('ofStatus').value,
+      };
+      const { data: existing } = await sb.from('offers').select('id').eq('job_id', payload.job_id).maybeSingle();
+      let error;
+      if (existing) {
+        ({ error } = await sb.from('offers').update(payload).eq('id', existing.id));
+      } else {
+        ({ error } = await sb.from('offers').insert(payload));
+      }
+      if (error) { alert('保存失败：' + error.message); return; }
+      // 自动推进 job 状态到 'verbal_offer' 或 'offer'
+      const newStatus = payload.status === 'accepted' ? 'offer' : (payload.status === 'declined' ? 'rejected' : 'verbal_offer');
+      await sb.from('jobs').update({ status: newStatus }).eq('id', payload.job_id);
+      closeOfferModal();
+      await loadJobs();
+      alert('✅ Offer 已保存');
+    });
+
+    // Offer 对比
+    window.openOfferCompareModal = async () => {
+      if (!currentUser) { openAuth(); return; }
+      const { data: offers, error } = await sb.from('offers').select('*').order('created_at', { ascending: false });
+      if (error) { alert('加载失败：' + error.message); return; }
+      currentOffers = offers || [];
+      renderOfferCompare();
+      document.getElementById('offerCompareModal').classList.remove('hidden');
+    };
+    window.closeOfferCompareModal = () => document.getElementById('offerCompareModal').classList.add('hidden');
+
+    function renderOfferCompare() {
+      const wrap = document.getElementById('offerCompareContent');
+      if (!currentOffers.length) {
+        wrap.innerHTML = '<div class="text-center py-12 text-slate-400">还没有 Offer 数据。点卡片上的 💰 按钮录入第一个。</div>';
+        return;
+      }
+      // 找最优值用于高亮
+      const baseArr = currentOffers.map(o => o.base_salary || 0);
+      const monthsArr = currentOffers.map(o => o.salary_months || 12);
+      const bonusArr = currentOffers.map(o => o.bonus_months || 0);
+      const stockArr = currentOffers.map(o => o.stock_value || 0);
+      const totalArr = currentOffers.map(o => calcOfferTotal(o));
+      const maxBase = Math.max(...baseArr);
+      const maxMonths = Math.max(...monthsArr);
+      const maxBonus = Math.max(...bonusArr);
+      const maxStock = Math.max(...stockArr);
+      const maxTotal = Math.max(...totalArr);
+
+      const rows = [
+        { label: '公司', get: o => escapeHtml(o.company) + ' ' + escapeHtml(o.position || '') },
+        { label: '状态', get: o => o.status === 'accepted' ? '✅ 已接受' : o.status === 'declined' ? '❌ 已拒绝' : '⏳ 待决定' },
+        { label: '月薪 (k)', get: o => o.base_salary ? highlight(o.base_salary, maxBase) + ' k' : '-' },
+        { label: '几薪', get: o => o.salary_months ? highlight(o.salary_months, maxMonths) + ' 月' : '-' },
+        { label: '年终奖 (月)', get: o => o.bonus_months ? highlight(o.bonus_months, maxBonus) + ' 月' : '-' },
+        { label: '股票 (k)', get: o => o.stock_value ? highlight(o.stock_value, maxStock) + ' k' : '-' },
+        { label: '福利', get: o => escapeHtml(o.other_benefits || '-') },
+        { label: '截止日期', get: o => o.deadline || '-' },
+        { label: '💰 总年包 (k)', get: o => highlight(calcOfferTotal(o), maxTotal, true) + ' k', highlightAll: true },
+      ];
+
+      wrap.innerHTML = '<div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr class="border-b border-slate-200"><th class="text-left py-2 px-3 font-medium text-slate-600 sticky left-0 bg-white">对比项</th>' +
+        currentOffers.map((o, i) => '<th class="text-left py-2 px-3 font-medium text-slate-800 min-w-32">' +
+          '<div class="text-base">' + escapeHtml(o.company) + '</div><div class="text-xs font-normal text-slate-500">' + escapeHtml(o.position || '') + '</div>' +
+          '<button onclick="openOfferModal(\'' + o.job_id + '\')" class="text-xs text-blue-600 hover:underline mt-1">编辑</button></th>').join('') +
+        '</tr></thead><tbody>' +
+        rows.map(r => '<tr class="border-b border-slate-100"><td class="py-2 px-3 text-slate-600 sticky left-0 bg-white">' + r.label + '</td>' +
+          currentOffers.map(o => '<td class="py-2 px-3">' + r.get(o) + '</td>').join('') + '</tr>').join('') +
+        '</tbody></table></div>';
+    }
+
+    function highlight(val, max, all = false) {
+      if (val === max && max > 0) {
+        return '<span class="px-1.5 py-0.5 bg-green-100 text-green-700 rounded font-medium">' + val + '</span>';
+      }
+      return val;
+    }
+
+    function calcOfferTotal(o) {
+      const base = (o.base_salary || 0) * (o.salary_months || 12);
+      const bonus = (o.base_salary || 0) * (o.bonus_months || 0);
+      const stock = (o.stock_value || 0);
+      return Math.round(base + bonus + stock);
+    }
+
     window.openFeedbackModal = async (jobId) => {
       if (!currentUser) { openAuth(); return; }
       const job = allJobs.find(j => j.id === jobId);
@@ -1275,6 +1475,7 @@
             </div>
             <div class="flex flex-col gap-1">
               <button onclick="openFeedbackModal('${j.id}')" class="text-xs px-2 py-1 text-blue-600 hover:bg-blue-50 rounded">📝 复盘</button>
+              <button onclick="openOfferModal('${j.id}')" class="text-xs px-2 py-1 text-yellow-600 hover:bg-yellow-50 rounded">💰 Offer</button>
               <button onclick="editJob('${j.id}')" class="text-xs px-2 py-1 text-slate-600 hover:bg-slate-100 rounded">编辑</button>
               <button onclick="deleteJob('${j.id}')" class="text-xs px-2 py-1 text-red-600 hover:bg-red-50 rounded">删除</button>
             </div>
