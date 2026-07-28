@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
@@ -659,30 +659,23 @@
           <span class="ml-auto text-xs text-slate-400 self-center">支持 Markdown</span>
         </div>
 
-        <!-- 编辑/预览区域 -->
-        <div id="fbEditorArea" class="flex-1 grid grid-cols-2 gap-2 min-h-0">
-          <textarea id="fbContent" class="w-full h-full p-3 border border-slate-300 rounded-lg text-sm font-mono resize-none focus:outline-none focus:border-blue-500" placeholder="# 一面 - 字节跳动
-
-**日期**: 2026-07-28
-**岗位**: AI 产品经理
-
-## 问到的题
-1. 为什么想做 AI 产品
-2. RAG 和 Fine-tuning 的区别
-
-## 我答得怎么样
-- 自我介绍: ⭐⭐⭐⭐
-- 技术题: ⭐⭐
-
-## 复盘
-- 准备不够充分
-- 案例讲太久
-
-## 改进
-- 复习 RAG
-- 案例控制 1 分钟内"></textarea>
-          <div id="fbPreview" class="w-full h-full p-3 border border-slate-200 rounded-lg overflow-y-auto bg-slate-50 text-sm"></div>
+        <!-- 飞书文档链接 -->
+        <div id="fbEditorArea" class="flex-1 flex flex-col gap-3 min-h-0">
+          <div>
+            <label class="text-xs text-slate-600 mb-1 block">📎 飞书文档链接（设为"互联网获得"权限）</label>
+            <input id="fbFeishuUrl" type="url" placeholder="https://ycnxf7egxwtd.feishu.cn/wiki/xxx" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:border-blue-500">
+          </div>
+          <button type="button" onclick="fetchFeishuDoc()" id="fbFetchBtn" class="w-full py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg text-sm hover:opacity-90">
+            🤖 抓取并 AI 分析复盘
+          </button>
+          <div id="fbLoading" class="hidden text-center py-3">
+            <div class="text-sm text-blue-600 mb-2">🤖 正在读取飞书文档 + AI 分析中...</div>
+            <div class="ai-loading h-1 rounded mx-auto" style="width: 200px;"></div>
+          </div>
+          <div id="fbContentDisplay" class="hidden flex-1 overflow-y-auto p-3 border border-slate-200 rounded-lg bg-slate-50 text-sm whitespace-pre-wrap"></div>
+          <div id="fbAdviceDisplay" class="hidden p-3 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg border border-indigo-200 text-sm"></div>
         </div>
+
 
         <div class="flex gap-2 mt-3 items-center">
           <span class="text-xs text-slate-400 flex-1" id="fbSavedHint">✓ 自动保存到本地</span>
@@ -843,108 +836,53 @@
 
     // ========== 面试复盘 ==========
     let currentFbRating = 0;
-    // ========== Markdown 引擎（极简自研，~120 行）============
-    // 支持: # ## ### 标题, **粗体**, *斜体*, ~~删除线~~, - 列表, 1. 有序列表, > 引用, `代码`, ```代码块```, [文字](url) 链接, --- 分割线
-    function renderMarkdown(text) {
-      if (!text) return '<p class="text-slate-400 text-sm">预览为空</p>';
-      // 先保护代码块
-      const codeBlocks = [];
-      text = text.replace(/```([\s\S]*?)```/g, (m, code) => {
-        codeBlocks.push(code);
-        return ` CODEBLOCK_${codeBlocks.length - 1} `;
-      });
-      // 保护行内代码
-      const inlineCodes = [];
-      text = text.replace(/`([^`\n]+)`/g, (m, code) => {
-        inlineCodes.push(code);
-        return ` INLINECODE_${inlineCodes.length - 1} `;
-      });
-      // HTML 转义
-      text = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-      // 恢复代码占位符
-      text = text.replace(/ INLINECODE_(\d+) /g, (m, i) => ` INLINECODE_${i} `);
-      text = text.replace(/ CODEBLOCK_(\d+) /g, (m, i) => ` CODEBLOCK_${i} `);
+    // ========== 飞书文档抓取 ==========
+    let fbFeishuContent = '';
+    let fbFeishuAdvice = '';
 
-      // 分割线
-      text = text.replace(/^---+$/gm, '<hr class="my-3 border-slate-200">');
-      // 标题
-      text = text.replace(/^### (.+)$/gm, '<h3 class="text-base font-semibold mt-3 mb-1 text-slate-800">$1</h3>');
-      text = text.replace(/^## (.+)$/gm, '<h2 class="text-lg font-semibold mt-3 mb-1 text-slate-800">$1</h2>');
-      text = text.replace(/^# (.+)$/gm, '<h1 class="text-xl font-bold mt-4 mb-2 text-slate-900">$1</h1>');
-      // 引用
-      text = text.replace(/^&gt; (.+)$/gm, '<blockquote class="border-l-4 border-slate-300 pl-3 py-1 my-1 text-slate-600 italic">$1</blockquote>');
-      // 有序列表
-      text = text.replace(/^(\d+)\. (.+)$/gm, '<li class="ml-4 list-decimal">$2</li>');
-      // 无序列表
-      text = text.replace(/^- (.+)$/gm, '<li class="ml-4 list-disc">$1</li>');
-      // 粗体
-      text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-      // 斜体
-      text = text.replace(/(?<!\*)\*([^*\n]+)\*(?!\*)/g, '<em>$1</em>');
-      // 删除线
-      text = text.replace(/~~([^~]+)~~/g, '<del>$1</del>');
-      // 链接 [文字](url)
-      text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" class="text-blue-600 hover:underline">$1</a>');
-      // 恢复代码块
-      text = text.replace(/ CODEBLOCK_(\d+) /g, (m, i) => `<pre class="bg-slate-900 text-slate-100 p-2 rounded text-xs my-2 overflow-x-auto"><code>${escapeHtml(codeBlocks[parseInt(i)])}</code></pre>`);
-      text = text.replace(/ INLINECODE_(\d+) /g, (m, i) => `<code class="bg-slate-100 text-slate-800 px-1 py-0.5 rounded text-xs font-mono">${escapeHtml(inlineCodes[parseInt(i)])}</code>`);
-      // 段落（双换行）
-      text = text.split(/\n\n+/).map(p => {
-        if (p.match(/^<(h\d|ul|ol|li|hr|blockquote|pre)/)) return p;
-        return `<p class="my-1.5 leading-relaxed">${p.replace(/\n/g, '<br>')}</p>`;
-      }).join('');
-      return text;
-    }
+    window.fetchFeishuDoc = async () => {
+      const url = document.getElementById('fbFeishuUrl').value.trim();
+      if (!url) { alert('请输入飞书文档链接'); return; }
+      if (!url.includes('feishu.cn')) { alert('链接不是飞书域名'); return; }
 
-    // 工具栏格式化
-    function fbFormat(type) {
-      const ta = document.getElementById('fbContent');
-      if (!ta) return;
-      const start = ta.selectionStart, end = ta.selectionEnd;
-      const text = ta.value;
-      const before = text.substring(0, start), sel = text.substring(start, end), after = text.substring(end);
-      const map = {
-        bold: `**${sel || '粗体文字'}**`,
-        italic: `*${sel || '斜体文字'}*`,
-        strike: `~~${sel || '删除线'}~~`,
-        h1: `# ${sel || '一级标题'}`,
-        h2: `## ${sel || '二级标题'}`,
-        h3: `### ${sel || '三级标题'}`,
-        ul: `- ${sel || '列表项'}`,
-        ol: `1. ${sel || '有序项'}`,
-        quote: `> ${sel || '引用内容'}`,
-        code: `\`${sel || '代码'}\``,
-        link: `[${sel || '链接文字'}](https://)`,
-        hr: `\n---\n`
-      };
-      const inserted = map[type] || '';
-      ta.value = before + inserted + after;
-      ta.focus();
-      const newPos = before.length + inserted.length;
-      ta.setSelectionRange(newPos, newPos);
-      updateFbPreview();
-      fbAutoSave();
-    }
+      const btn = document.getElementById('fbFetchBtn');
+      btn.disabled = true; btn.textContent = '🤖 抓取中...';
+      document.getElementById('fbLoading').classList.remove('hidden');
+      document.getElementById('fbContentDisplay').classList.add('hidden');
+      document.getElementById('fbAdviceDisplay').classList.add('hidden');
 
-    // 自动保存 + 实时预览
-    let fbCurrentContent = '';
-    let fbSaveTimer = null;
-    function fbAutoSave() {
-      clearTimeout(fbSaveTimer);
-      fbSaveTimer = setTimeout(() => {
-        const jobId = document.getElementById('fbJobId').value;
-        if (jobId) {
-          localStorage.setItem('fb_draft_' + jobId, fbCurrentContent);
-          const hint = document.getElementById('fbSavedHint');
-          if (hint) { hint.textContent = '✓ 已自动保存到本地'; setTimeout(() => hint.textContent = '✓ 自动保存到本地', 1500); }
+      try {
+        const { data, error } = await sb.functions.invoke('fetch-feishu', { body: { feishuUrl: url } });
+        document.getElementById('fbLoading').classList.add('hidden');
+        if (error) throw error;
+        if (!data?.success) throw new Error(data?.error || '抓取失败');
+
+        fbFeishuContent = data.data.content || '';
+        fbFeishuAdvice = data.data.advice || '';
+
+        const contentEl = document.getElementById('fbContentDisplay');
+        contentEl.textContent = fbFeishuContent;
+        contentEl.classList.remove('hidden');
+
+        if (fbFeishuAdvice) {
+          const adviceEl = document.getElementById('fbAdviceDisplay');
+          adviceEl.innerHTML = '<strong>💡 AI 给你的下次面试建议：</strong><br>' + escapeHtml(fbFeishuAdvice).replace(/\n/g, '<br>');
+          adviceEl.classList.remove('hidden');
         }
-      }, 500);
+      } catch (err) {
+        document.getElementById('fbLoading').classList.add('hidden');
+        alert('抓取失败：' + err.message + '\n\n提示：\n1. 确认飞书文档已开"互联网获得"权限\n2. 链接能复制给朋友访问\n3. 网络问题');
+      } finally {
+        btn.disabled = false; btn.textContent = '🤖 抓取并 AI 分析复盘';
+      }
+    };
+
     }
     function updateFbPreview() {
       const ta = document.getElementById('fbContent');
       const prev = document.getElementById('fbPreview');
       if (!ta || !prev) return;
-      fbCurrentContent = ta.value;
+      fbFeishuContent = ta.value;
       prev.innerHTML = renderMarkdown(ta.value);
     }
     function fbKeydown(e) {
@@ -957,8 +895,8 @@
     function initFbContent() {
       const ta = document.getElementById('fbContent');
       if (ta) {
-        ta.value = fbCurrentContent || '';
-        ta.addEventListener('input', () => { updateFbPreview(); fbAutoSave(); });
+        ta.value = fbFeishuContent || '';
+        ta.addEventListener('input', () => { // updateFbPreview(); // 飞书模式 // fbAutoSave(); // 飞书模式暂用 });
         ta.addEventListener('keydown', fbKeydown);
       }
     }
@@ -989,10 +927,10 @@
         const last = history[0];
         // 默认显示最近一次的面数（用户自己改）
         document.getElementById('fbRound').value = Math.min(parseInt(last.round), 7);
-        fbCurrentContent = last.notes || '';
+        fbFeishuContent = last.notes || '';
       } else {
         const draft = localStorage.getItem('fb_draft_' + jobId);
-        fbCurrentContent = draft || '';
+        fbFeishuContent = draft || '';
       }
 
       // 初始化 textarea（如果切过模式）
@@ -1004,8 +942,8 @@
           <div id="fbPreview" class="w-full h-full p-3 border border-slate-200 rounded-lg overflow-y-auto bg-slate-50 text-sm"></div>
         `;
       }
-      initFbContent();
-      updateFbPreview();
+      // initFbContent(); // 飞书模式
+      // updateFbPreview(); // 飞书模式
       document.getElementById('fbAdvice').classList.add('hidden');
       document.getElementById('feedbackModal').classList.remove('hidden');
       await loadFeedbackHistory(jobId);
@@ -1028,11 +966,11 @@
         const preview = (f.notes || '').replace(/[#*`>]/g, '').slice(0, 80);
         return `
         <div class="border border-slate-200 rounded-lg p-2 text-xs">
-          <div class="flex items-center justify-between cursor-pointer hover:bg-slate-50 -m-2 p-2" onclick="document.getElementById('fbContent').value=\`${content}\`;updateFbPreview();">
+          <div class="flex items-center justify-between cursor-pointer hover:bg-slate-50 -m-2 p-2" onclick="document.getElementById('fbContent').value=\`${content}\`;// updateFbPreview(); // 飞书模式">
             <span class="font-medium">第 ${f.round} 面 · ${typeLabel[f.interview_type] || f.interview_type} · ${f.interview_date || ''}</span>
             <span class="text-slate-400">${new Date(f.created_at).toLocaleString('zh-CN')}</span>
           </div>
-          <div class="text-slate-500 mt-1 line-clamp-2 cursor-pointer pl-1" onclick="document.getElementById('fbContent').value=\`${content}\`;updateFbPreview();">${escapeHtml(preview)}</div>
+          <div class="text-slate-500 mt-1 line-clamp-2 cursor-pointer pl-1" onclick="document.getElementById('fbContent').value=\`${content}\`;// updateFbPreview(); // 飞书模式">${escapeHtml(preview)}</div>
           <div class="flex justify-end gap-2 mt-1">
             <button onclick="loadFeedbackIntoEditor(\`${content}\`)" class="text-xs text-blue-600 hover:underline">📝 编辑</button>
             <button onclick="deleteFeedback('${f.id}', '${jobId}')" class="text-xs text-red-600 hover:underline">🗑 删除</button>
@@ -1045,7 +983,7 @@
     // 把历史复盘加载到编辑器
     window.loadFeedbackIntoEditor = (content) => {
       document.getElementById('fbContent').value = content;
-      updateFbPreview();
+      // updateFbPreview(); // 飞书模式
     };
 
     // 删除复盘
