@@ -639,26 +639,6 @@
           </div>
         </div>
 
-        <!-- 工具栏 -->
-        <div class="flex flex-wrap gap-1 mb-2 pb-2 border-b border-slate-200">
-          <button type="button" onclick="fbFormat('bold')" class="px-2 py-1 text-sm font-bold hover:bg-slate-100 rounded" title="粗体 Ctrl+B"><b>B</b></button>
-          <button type="button" onclick="fbFormat('italic')" class="px-2 py-1 text-sm italic hover:bg-slate-100 rounded" title="斜体 Ctrl+I"><i>I</i></button>
-          <button type="button" onclick="fbFormat('strike')" class="px-2 py-1 text-sm line-through hover:bg-slate-100 rounded" title="删除线"><s>S</s></button>
-          <span class="border-l border-slate-200 mx-1"></span>
-          <button type="button" onclick="fbFormat('h1')" class="px-2 py-1 text-sm hover:bg-slate-100 rounded" title="一级标题">H1</button>
-          <button type="button" onclick="fbFormat('h2')" class="px-2 py-1 text-sm hover:bg-slate-100 rounded" title="二级标题">H2</button>
-          <button type="button" onclick="fbFormat('h3')" class="px-2 py-1 text-sm hover:bg-slate-100 rounded" title="三级标题">H3</button>
-          <span class="border-l border-slate-200 mx-1"></span>
-          <button type="button" onclick="fbFormat('ul')" class="px-2 py-1 text-sm hover:bg-slate-100 rounded" title="无序列表">•</button>
-          <button type="button" onclick="fbFormat('ol')" class="px-2 py-1 text-sm hover:bg-slate-100 rounded" title="有序列表">1.</button>
-          <button type="button" onclick="fbFormat('quote')" class="px-2 py-1 text-sm hover:bg-slate-100 rounded" title="引用">&gt;</button>
-          <span class="border-l border-slate-200 mx-1"></span>
-          <button type="button" onclick="fbFormat('code')" class="px-2 py-1 text-sm font-mono hover:bg-slate-100 rounded" title="代码">&lt;/&gt;</button>
-          <button type="button" onclick="fbFormat('link')" class="px-2 py-1 text-sm hover:bg-slate-100 rounded" title="链接 Ctrl+K">🔗</button>
-          <button type="button" onclick="fbFormat('hr')" class="px-2 py-1 text-sm hover:bg-slate-100 rounded" title="分割线">—</button>
-          <span class="ml-auto text-xs text-slate-400 self-center">支持 Markdown</span>
-        </div>
-
         <!-- 飞书文档链接 -->
         <div id="fbEditorArea" class="flex-1 flex flex-col gap-3 min-h-0">
           <div>
@@ -879,26 +859,14 @@
 
     }
     function updateFbPreview() {
-      const ta = document.getElementById('fbContent');
-      const prev = document.getElementById('fbPreview');
-      if (!ta || !prev) return;
-      fbFeishuContent = ta.value;
-      prev.innerHTML = renderMarkdown(ta.value);
+      // 飞书模式：已弃用（保留函数名防止兼容问题）
     }
     function fbKeydown(e) {
-      if (e.ctrlKey || e.metaKey) {
-        if (e.key === 'b') { e.preventDefault(); fbFormat('bold'); }
-        else if (e.key === 'i') { e.preventDefault(); fbFormat('italic'); }
-        else if (e.key === 'k') { e.preventDefault(); fbFormat('link'); }
-      }
+      // 飞书模式：已弃用
     }
     function initFbContent() {
-      const ta = document.getElementById('fbContent');
-      if (ta) {
-        ta.value = fbFeishuContent || '';
-        ta.addEventListener('input', () => { // updateFbPreview(); // 飞书模式 // fbAutoSave(); // 飞书模式暂用 });
-        ta.addEventListener('keydown', fbKeydown);
-      }
+      // 飞书模式：已弃用
+    }
     }
 
     // ========== 打开复盘弹窗 ==========
