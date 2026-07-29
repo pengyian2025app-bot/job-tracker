@@ -398,18 +398,6 @@
     </div>
   </div>
 
-  <!-- ============ 命令面板（Ctrl+K）============ -->
-  <div id="commandPalette" class="hidden fixed inset-0 z-[70] flex items-start justify-center pt-24 modal-backdrop">
-    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 fade-in overflow-hidden">
-      <div class="flex items-center border-b border-slate-200 px-4 py-3">
-        <span class="text-slate-400 mr-2">🔍</span>
-        <input id="cmdInput" type="text" placeholder="输入命令或搜索公司名..." class="flex-1 outline-none text-sm" autocomplete="off">
-        <kbd class="text-xs text-slate-400 border rounded px-1.5 py-0.5">ESC</kbd>
-      </div>
-      <div id="cmdResults" class="max-h-80 overflow-y-auto"></div>
-    </div>
-  </div>
-
   <!-- ============ 疑似重复确认弹窗 ============ -->
   <div id="dupModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4 modal-backdrop">
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 fade-in">
@@ -748,11 +736,8 @@
   </div>
 
   <div class="fixed bottom-6 right-6 z-40 flex flex-col gap-3 items-end">
-    <button id="addBtn" class="w-14 h-14 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 text-2xl" title="新增单条 (Ctrl+K → A)">+</button>
-    <button id="batchBtn" class="w-14 h-14 bg-purple-600 text-white rounded-full shadow-lg hover:bg-purple-700 text-xl" title="批量识别">📸</button>
-  </div>
-  <div class="fixed bottom-6 left-6 z-30 text-xs text-slate-400 hidden md:flex items-center gap-1 bg-white/80 backdrop-blur px-2 py-1 rounded">
-    <kbd class="text-xs border border-slate-300 rounded px-1.5 py-0.5 bg-white">Ctrl</kbd> + <kbd class="text-xs border border-slate-300 rounded px-1.5 py-0.5 bg-white">K</kbd> 唤起命令面板
+    <button id="addBtn" class="w-14 h-14 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 text-2xl" title="新增单条">+</button>
+    <button id="batchBtn" class="w-14 h-14 bg-purple-600 text-white rounded-full shadow-lg hover:bg-purple-600 text-xl" title="批量识别">📸</button>
   </div>
 
   <!-- ============ 批量上传隐藏 input ============ -->
@@ -1630,135 +1615,6 @@
       if (error) { alert('保存失败：' + error.message); return; }
       closeForm();
       await loadJobs();
-    });
-
-    // ========== 命令面板 Ctrl+K ==========
-    const COMMANDS = [
-      { id: 'add', icon: '➕', title: '新增记录', shortcut: 'A', action: () => { if (!currentUser) openAuth(); else openForm(); } },
-      { id: 'batch', icon: '📸', title: '批量识别截图', action: () => { if (!currentUser) openAuth(); else document.getElementById('batchImageInput').click(); } },
-      { id: 'interview', icon: '🎯', title: 'AI 面试题生成', action: openInterviewModal },
-      { id: 'match', icon: '⭐', title: 'AI 匹配度评分', action: openMatchModal },
-      { id: 'letter', icon: '✉️', title: 'AI 投递信草稿', action: openLetterModal },
-      { id: 'review', icon: '🎙', title: 'AI 面试复盘', action: openReviewModal },
-      { id: 'journal', icon: '📔', title: '每日复盘笔记', action: openJournalModal },
-      { id: 'export', icon: '📥', title: '导出 Excel', action: exportExcel },
-      { id: 'dashboard', icon: '📊', title: '查看进度看板', action: () => { document.getElementById('dashboard').scrollIntoView({ behavior: 'smooth' }); } },
-      { id: 'logout', icon: '🚪', title: '退出登录', action: logout },
-    ];
-
-    let cmdSelectedIdx = 0;
-    let cmdCurrentResults = [];
-
-    function openCommandPalette() {
-      document.getElementById('commandPalette').classList.remove('hidden');
-      const input = document.getElementById('cmdInput');
-      input.value = '';
-      input.focus();
-      cmdSelectedIdx = 0;
-      renderCommandResults('');
-    }
-    function closeCommandPalette() {
-      document.getElementById('commandPalette').classList.add('hidden');
-    }
-
-    function renderCommandResults(query) {
-      const q = query.toLowerCase().trim();
-      let results = [];
-
-      // 匹配命令
-      const matchedCmds = q
-        ? COMMANDS.filter(c => c.title.toLowerCase().includes(q))
-        : COMMANDS;
-      results = results.concat(matchedCmds.map(c => ({ type: 'cmd', ...c })));
-
-      // 匹配记录（公司名 / 岗位）
-      if (q.length >= 1) {
-        const matchedJobs = allJobs.filter(j =>
-          (j.company || '').toLowerCase().includes(q) ||
-          (j.position || '').toLowerCase().includes(q)
-        ).slice(0, 8);
-        results = results.concat(matchedJobs.map(j => ({
-          type: 'job', icon: '🔗', title: `${j.company} - ${j.position}`,
-          sub: STATUS_LABELS[j.status] || j.status,
-          action: () => {
-            const el = document.querySelector(`[data-job-id="${j.id}"]`);
-            if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.classList.add('ring-2', 'ring-blue-400'); setTimeout(() => el.classList.remove('ring-2', 'ring-blue-400'), 2000); }
-          }
-        })));
-      }
-
-      cmdCurrentResults = results;
-      cmdSelectedIdx = 0;
-
-      const resultsEl = document.getElementById('cmdResults');
-      if (!results.length) {
-        resultsEl.innerHTML = '<div class="p-8 text-center text-slate-400 text-sm">无匹配结果</div>';
-        return;
-      }
-      resultsEl.innerHTML = results.map((r, i) => `
-        <div class="cmd-item px-4 py-2.5 flex items-center gap-3 cursor-pointer ${i === 0 ? 'bg-blue-50' : 'hover:bg-slate-50'}" data-idx="${i}">
-          <span class="text-lg">${r.icon}</span>
-          <div class="flex-1 min-w-0">
-            <div class="text-sm text-slate-800 truncate">${escapeHtml(r.title)}</div>
-            ${r.sub ? `<div class="text-xs text-slate-500">${escapeHtml(r.sub)}</div>` : ''}
-          </div>
-          ${r.shortcut ? `<kbd class="text-xs text-slate-400 border rounded px-1.5 py-0.5">${r.shortcut}</kbd>` : ''}
-        </div>
-      `).join('');
-
-      resultsEl.querySelectorAll('.cmd-item').forEach(el => {
-        el.addEventListener('click', () => {
-          const idx = parseInt(el.dataset.idx);
-          cmdCurrentResults[idx]?.action();
-          closeCommandPalette();
-        });
-      });
-    }
-
-    document.getElementById('cmdInput').addEventListener('input', (e) => renderCommandResults(e.target.value));
-    document.getElementById('cmdInput').addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') { closeCommandPalette(); return; }
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        cmdSelectedIdx = Math.min(cmdSelectedIdx + 1, cmdCurrentResults.length - 1);
-        updateCmdSelection();
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        cmdSelectedIdx = Math.max(cmdSelectedIdx - 1, 0);
-        updateCmdSelection();
-      } else if (e.key === 'Enter') {
-        e.preventDefault();
-        cmdCurrentResults[cmdSelectedIdx]?.action();
-        closeCommandPalette();
-      }
-    });
-
-    function updateCmdSelection() {
-      const items = document.querySelectorAll('.cmd-item');
-      items.forEach((el, i) => {
-        el.classList.toggle('bg-blue-50', i === cmdSelectedIdx);
-        el.classList.toggle('hover:bg-slate-50', i !== cmdSelectedIdx);
-      });
-    }
-
-    // 全局快捷键
-    document.addEventListener('keydown', (e) => {
-      // Ctrl+K 或 Cmd+K 打开命令面板
-      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-        e.preventDefault();
-        openCommandPalette();
-        return;
-      }
-      // Esc 关闭所有弹窗
-      if (e.key === 'Escape') {
-        closeCommandPalette();
-        if (!document.getElementById('commandPalette').classList.contains('hidden')) return;
-      }
-    });
-
-    // 点击命令面板背景关闭
-    document.getElementById('commandPalette').addEventListener('click', (e) => {
-      if (e.target.id === 'commandPalette') closeCommandPalette();
     });
 
     // ========== 智能去重合并 ==========
