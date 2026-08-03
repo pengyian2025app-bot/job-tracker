@@ -1,0 +1,16 @@
+portfolio-interactive.html
+index.html
+portfolio-v2.html
+portfolio-final-v2.html
+portfolio.html
+portfolio-v2.old.pdf
+portfolio.pdf
+*.py
+*.log
+test-*.png
+verify-*.png
+edge*.log
+*.tmp
+*.bak
+*.broken
+supabase/.temp/
