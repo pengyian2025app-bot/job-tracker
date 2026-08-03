@@ -44,10 +44,17 @@
 
   <div class="max-w-5xl mx-auto px-4 py-6">
     <!-- ============ 投递进度看板 ============ -->
-    <div id="dashboard" class="hidden mb-6 bg-white rounded-xl border border-slate-200 p-4">
+    <div id="dashboard" class="mb-6 bg-white rounded-xl border border-slate-200 p-4">
       <h2 class="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
         <span>📊</span>投递进度看板
       </h2>
+
+      <!-- 空数据友好提示（默认隐藏，有数据时不显示） -->
+      <div id="dashboardEmpty" class="hidden bg-slate-50 rounded-lg p-4 mb-4 text-center border border-dashed border-slate-300">
+        <div class="text-3xl mb-2">📋</div>
+        <div class="text-sm font-medium text-slate-700 mb-1">还没有数据，先加几条记录试试</div>
+        <div class="text-xs text-slate-500">点击右下角 <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-blue-600 text-white text-xs">+</span> 开始你的第一次投递</div>
+      </div>
 
       <!-- 关键指标 -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
@@ -1285,7 +1292,7 @@
 
     function renderDashboard(list) {
       const dashboard = document.getElementById('dashboard');
-      if (!list.length) { dashboard.classList.add('hidden'); return; }
+      // 始终显示看板（无数据时显示 0 + "暂无数据"提示）
       dashboard.classList.remove('hidden');
 
       // KPI（永远要显示）
@@ -1307,6 +1314,15 @@
 
       // 图表（包 try/catch）
       try { renderCharts(list); } catch (err) { console.error('[图表失败]', err); }
+
+      // 空数据友好提示（只在没数据时显示）
+      try {
+        const empty = document.getElementById('dashboardEmpty');
+        if (empty) {
+          if (!list.length) empty.classList.remove('hidden');
+          else empty.classList.add('hidden');
+        }
+      } catch (err) { console.error('[空状态提示失败]', err); }
     }
 
     function renderCharts(list) {
